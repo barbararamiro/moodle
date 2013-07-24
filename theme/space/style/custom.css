@@ -1,0 +1,197 @@
+/* Custom CSS
+-------------------------*/
+a.logo {
+    background: url([[setting:logo]]) no-repeat 0 0;
+    display: block;
+    float: left;
+    height: 75px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.dir-rtl a.logo {
+    background: url([[setting:logo]]) no-repeat 100% 0;
+    display: block;
+    float: right;
+}
+
+/* Custom CSS Settings
+-------------------------*/
+/*[[setting:customcss]]*/
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    /*color: rgb(99, 99, 99);*/
+    color: rgb(153, 153, 153);
+    /*background-color: rgb(0, 0, 0);*/
+    /*background-color: rgb(204, 204, 204);*/
+    /*background-color: rgb(246, 246, 246);*/
+    /*background-color: rgb(247, 244, 239);*/
+    /*background-color: rgb(222, 221, 227);*/
+    /*background-color: rgb(96, 110, 130);*/
+    background-color: rgb(49, 56, 66);
+    /*background-color: rgb(39, 43, 48);*/
+    /*background: url('space/pix/bg.png') repeat 0 0;*/
+    /*background: url("/~barbararamiro/moodle/theme/image.php?theme=splash&component=theme&image=bggreen") repeat-x scroll left top transparent;*/
+}
+
+a {
+    /*color: rgb(239, 68, 35);*/
+    color: rgb(99, 99, 99);
+}
+
+a:hover, a:focus {
+    color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    color: rgb(239, 68, 35);
+}
+
+h1 {
+    font-size: 32px;
+}
+h2 {
+    font-size: 28px;
+}
+h3 {
+    font-size: 24px;
+}
+h4 {
+    font-size: 20px;
+}
+h5 {
+    font-size: 16px;
+}
+h6 {
+    font-size: 12px;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+   /*color: rgb(239, 68, 35);*/
+   color: inherit;
+}
+
+/*.bold, .warning, .errorbox .title, .pagingbar .title, .pagingbar .thispage,*/ .headingblock {
+    font-weight: normal;
+}
+
+.navbar-inner {
+    /*background-color: rgb(37, 43, 54);*/
+    background-color: rgb(239, 68, 35);
+    background-image: none;
+    /*background-image: linear-gradient(rgb(32, 35, 40), rgb(21, 23, 25) 70%, rgb(21, 23, 25));*/
+    border: 1px solid rgb(37, 43, 54);
+    /*background-color: rgb(69, 174, 234);
+    background-image: linear-gradient(to bottom, rgb(84, 180, 235), rgb(47, 164, 231));
+    background-repeat: repeat-x;
+    border: 1px solid rgb(25, 144, 213);*/
+}
+
+.navbar .brand {
+    font-size: 24px;
+    /*font-weight: 200;*/
+    color: rgb(255, 255, 255);
+    /*text-shadow: 0px 1px 0px rgb(239, 68, 35);*/
+    text-shadow: none;
+    /*text-shadow: 0px 1px 2px rgb(255, 153, 102);*/
+}
+
+.navbar .nav > li > a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    /*text-shadow: 0px 1px 0px rgb(239, 68, 35);*/
+    text-shadow: none;
+}
+
+.navbar .nav li.dropdown > .dropdown-toggle .caret {
+    border-top-color: rgb(255, 255, 255);
+    /*border-bottom-color: rgb(119, 119, 119);*/
+}
+.navbar-text {
+    color: rgb(255, 255, 255);
+}
+
+.breadcrumb {
+    background-color: rgb(255, 255, 255);
+}
+
+.block {
+    /*min-height: 20px;
+    padding: 8px 0px;
+    margin-bottom: 20px;*/
+    background-color: rgb(255, 255, 255);
+    /*border: 1px solid rgb(227, 227, 227);
+    border-radius: 4px 4px 4px 4px;*/
+    box-shadow: none;
+    color: rgb(0, 155, 221);
+}
+
+.block a {
+    /*color: rgb(239, 68, 35);*/
+    color: rgb(99, 99, 99);
+    /*color: green;*/
+}
+
+.block .block_tree .tree_item {
+    color: rgb(99, 99, 99);
+}
+
+.block_navigation .block_tree .active_tree_node {
+    font-weight: normal;
+    color: red;
+}
+
+
+
+/*.navbar a {
+    color: rgb(255, 255, 255);
+}*/
+
+/*.navbar .nav {
+    color: rgb(255, 255, 255);
+}*/
+
+
+/*h3 a {
+    color: rgb(239, 68, 35);
+}*/
+
+/*.course-content .current {
+    background-color: rgb(204, 204, 204);
+}*/
+
+/*.course-content*/
+#region-main {
+    background-color: white;
+    border-radius: 4px 4px 4px 4px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+
+
+
+
+.course-content ul li.section.main {
+    border-bottom: 1px solid rgb(238, 238, 238);
+}
+.course-content .section-summary {
+    border: none;
+}
+
+.course-content .single-section .section-navigation .title {
+    font-weight: normal;
+    font-size: 28px;
+    line-height: 40px;
+    color: rgb(239,68,35);
+}
+/*#add, #remove, .centerpara, .mdl-align {
+    text-align: left;
+}*/
+
+p {
+    /*margin: 0px 0px 10px;*/
+    /*margin: inherit;*/
+}
