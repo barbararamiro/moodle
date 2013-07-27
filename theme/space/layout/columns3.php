@@ -72,7 +72,7 @@ echo $OUTPUT->doctype() ?>
 
 <div id="page" class="container-fluid">
 
-    <header id="page-header" class="clearfix">
+    <header id="page-header" class="clearfix">  
         <?php echo $html->heading; ?>
         <div id="page-navbar">
             <nav class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></nav>

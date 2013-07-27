@@ -2,8 +2,9 @@
 -------------------------*/
 a.logo {
     background: url([[setting:logo]]) no-repeat 0 0;
+    /*background: url([[pix:theme|logo]]) no-repeat 0 0;*/
     display: block;
-    float: left;
+    /*float: left;*/ /*turn this off to set the logo apart from breadcrumbs*/
     height: 75px;
     margin: 0;
     padding: 0;
@@ -18,9 +19,10 @@ a.logo {
 
 /* Custom CSS Settings
 -------------------------*/
-/*[[setting:customcss]]*/
+[[setting:customcss]]
 body {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    /*font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;*/
+    font-family: "Arial";
     /*color: rgb(99, 99, 99);*/
     color: rgb(153, 153, 153);
     /*background-color: rgb(0, 0, 0);*/
@@ -29,10 +31,9 @@ body {
     /*background-color: rgb(247, 244, 239);*/
     /*background-color: rgb(222, 221, 227);*/
     /*background-color: rgb(96, 110, 130);*/
-    background-color: rgb(49, 56, 66);
     /*background-color: rgb(39, 43, 48);*/
-    /*background: url('space/pix/bg.png') repeat 0 0;*/
-    /*background: url("/~barbararamiro/moodle/theme/image.php?theme=splash&component=theme&image=bggreen") repeat-x scroll left top transparent;*/
+    background-color: rgb(49, 56, 66);
+    background: url([[pix:theme|bg]]) repeat 0 0;
 }
 
 a {
@@ -46,7 +47,8 @@ a:hover, a:focus {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal;
-    color: rgb(239, 68, 35);
+    /*color: rgb(239, 68, 35);*/
+    color: rgb(236, 89, 35);
 }
 
 h1 {
@@ -78,11 +80,39 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 }
 
 .navbar-inner {
-    /*background-color: rgb(37, 43, 54);*/
-    background-color: rgb(239, 68, 35);
+    /*-----dark blue-----*/
+    /*-----works well with demin bg-----*/
+    background-color: rgb(37, 43, 54);
     background-image: none;
-    /*background-image: linear-gradient(rgb(32, 35, 40), rgb(21, 23, 25) 70%, rgb(21, 23, 25));*/
     border: 1px solid rgb(37, 43, 54);
+
+
+    /*light gray*/
+    /*background-color: #3d3d3d;
+    background-image: none;
+    border: 0px solid rgb(236, 89, 35);
+*/
+    /*background-color: rgb(37, 43, 54);*/
+    /*background-color: rgb(16, 27, 43);*/
+    /*background-color: rgb(40, 44, 50);*/
+
+    /*dark gray*/
+    /*background-color: #333333; */
+
+    /*moodle.com gray*/
+    /*background-color: #464646;*/
+
+    /*green*/
+    /*background-color: #6aad2d;*/
+    
+    /*background-color: rgb(251, 75, 40);*/
+    /*background-color: rgb(239, 68, 35);*/
+    /*background-color: rgb(243, 125, 40);*/
+    /*background-image: none;
+    border: none;*/
+    /*background-image: linear-gradient(rgb(32, 35, 40), rgb(21, 23, 25) 70%, rgb(21, 23, 25));*/
+    
+    /*border: 1px solid rgb(251, 75, 40);*/
     /*background-color: rgb(69, 174, 234);
     background-image: linear-gradient(to bottom, rgb(84, 180, 235), rgb(47, 164, 231));
     background-repeat: repeat-x;
@@ -169,10 +199,6 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     padding-left: 20px;
     padding-right: 20px;
 }
-
-
-
-
 
 .course-content ul li.section.main {
     border-bottom: 1px solid rgb(238, 238, 238);
