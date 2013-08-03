@@ -579,18 +579,17 @@ class quiz_statistics_report extends quiz_default_report {
      * @param int $quizstatsid the id of the statistics to show in the graph.
      */
     protected function output_statistics_graph($quizstatsid, $s) {
-        global $OUTPUT;
+        global $PAGE;
 
         if ($s == 0) {
             return;
         }
 
+        $output = $PAGE->get_renderer('mod_quiz');
         $imageurl = new moodle_url('/mod/quiz/report/statistics/statistics_graph.php',
                 array('id' => $quizstatsid));
-        $OUTPUT->heading(get_string('statisticsreportgraph', 'quiz_statistics'));
-        echo html_writer::tag('div', html_writer::empty_tag('img', array('src' => $imageurl,
-                'alt' => get_string('statisticsreportgraph', 'quiz_statistics'))),
-                array('class' => 'graph'));
+        $graphname = get_string('statisticsreportgraph', 'quiz_statistics');
+        echo $output->graph($imageurl, $graphname);
     }
 
     /**
@@ -967,13 +966,16 @@ class quiz_statistics_report extends quiz_default_report {
     protected function everything_download_options() {
         $downloadoptions = $this->table->get_download_menu();
 
+        $downloadelements = new stdClass();
+        $downloadelements->formatsmenu = html_writer::select($downloadoptions, 'download',
+                $this->table->defaultdownloadformat, false);
+        $downloadelements->downloadbutton = '<input type="submit" value="' .
+                get_string('download') . '"/>';
+
         $output = '<form action="'. $this->table->baseurl .'" method="post">';
         $output .= '<div class="mdl-align">';
         $output .= '<input type="hidden" name="everything" value="1"/>';
-        $output .= '<input type="submit" value="' .
-                get_string('downloadeverything', 'quiz_statistics') . '"/>';
-        $output .= html_writer::select($downloadoptions, 'download',
-                $this->table->defaultdownloadformat, false);
+        $output .= html_writer::tag('label', get_string('downloadeverything', 'quiz_statistics', $downloadelements));
         $output .= '</div></form>';
 
         return $output;

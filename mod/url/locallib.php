@@ -220,10 +220,10 @@ function url_display_frame($url, $cm, $course) {
 
     } else {
         $config = get_config('url');
-        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $context = context_module::instance($cm->id);
         $exteurl = url_get_full_url($url, $cm, $course, $config);
         $navurl = "$CFG->wwwroot/mod/url/view.php?id=$cm->id&amp;frameset=top";
-        $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+        $coursecontext = context_course::instance($course->id);
         $courseshortname = format_string($course->shortname, true, array('context' => $coursecontext));
         $title = strip_tags($courseshortname.': '.format_string($url->name));
         $framesize = $config->framesize;
@@ -462,7 +462,7 @@ function url_get_variable_values($url, $cm, $course, $config) {
 
     $site = get_site();
 
-    $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+    $coursecontext = context_course::instance($course->id);
 
     $values = array (
         'courseid'        => $course->id,
@@ -509,7 +509,7 @@ function url_get_variable_values($url, $cm, $course, $config) {
 
     //hmm, this is pretty fragile and slow, why do we need it here??
     if ($config->rolesinparams) {
-        $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+        $coursecontext = context_course::instance($course->id);
         $roles = role_fix_names(get_all_roles($coursecontext), $coursecontext, ROLENAME_ALIAS);
         foreach ($roles as $role) {
             $values['course'.$role->shortname] = $role->localname;
@@ -540,21 +540,26 @@ function url_get_encrypted_parameter($url, $config) {
 /**
  * Optimised mimetype detection from general URL
  * @param $fullurl
- * @return string mimetype
+ * @param int $size of the icon.
+ * @return string|null mimetype or null when the filetype is not relevant.
  */
-function url_guess_icon($fullurl) {
+function url_guess_icon($fullurl, $size = null) {
     global $CFG;
     require_once("$CFG->libdir/filelib.php");
 
     if (substr_count($fullurl, '/') < 3 or substr($fullurl, -1) === '/') {
-        // most probably default directory - index.php, index.html, etc.
-        return file_extension_icon('.htm');
+        // Most probably default directory - index.php, index.html, etc. Return null because
+        // we want to use the default module icon instead of the HTML file icon.
+        return null;
     }
 
-    $icon = file_extension_icon($fullurl);
+    $icon = file_extension_icon($fullurl, $size);
+    $htmlicon = file_extension_icon('.htm', $size);
+    $unknownicon = file_extension_icon('', $size);
 
-    if ($icon === file_extension_icon('')) {
-        return file_extension_icon('.htm');
+    // We do not want to return those icon types, the module icon is more appropriate.
+    if ($icon === $unknownicon || $icon === $htmlicon) {
+        return null;
     }
 
     return $icon;

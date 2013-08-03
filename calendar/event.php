@@ -123,10 +123,10 @@ if ($eventid !== 0) {
     $event = new stdClass();
     $event->action = $action;
     $event->course = $courseid;
+    $event->courseid = $courseid;
     $event->timeduration = 0;
     if ($formoptions->eventtypes->courses) {
         if (!$issite) {
-            $event->courseid = $courseid;
             $event->eventtype = 'course';
         } else {
             unset($formoptions->eventtypes->courses);
@@ -194,8 +194,6 @@ $renderer = $PAGE->get_renderer('core_calendar');
 $calendar->add_sidecalendar_blocks($renderer);
 
 echo $OUTPUT->header();
-echo $renderer->start_layout();
 echo $OUTPUT->heading($title);
 $mform->display();
-echo $renderer->complete_layout();
 echo $OUTPUT->footer();

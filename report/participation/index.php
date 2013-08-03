@@ -60,7 +60,7 @@ if ($roleid != 0 and !$role = $DB->get_record('role', array('id'=>$roleid))) {
 }
 
 require_login($course);
-$context = get_context_instance(CONTEXT_COURSE, $course->id);
+$context = context_course::instance($course->id);
 require_capability('report/participation:view', $context);
 
 add_to_log($course->id, "course", "report participation", "report/participation/index.php?id=$course->id", $course->id);
@@ -303,7 +303,7 @@ if (!empty($instanceid) && !empty($roleid)) {
     }
     echo '</div>';
     echo '<div>';
-    echo '<label for="formaction">'.get_string('withselectedusers').'</label>';
+    echo html_writer::label(get_string('withselectedusers'), 'formactionselect');
     $displaylist['messageselect.php'] = get_string('messageselectadd');
     echo html_writer::select($displaylist, 'formaction', '', array(''=>'choosedots'), array('id'=>'formactionselect'));
     echo $OUTPUT->help_icon('withselectedusers');

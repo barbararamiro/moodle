@@ -318,7 +318,7 @@ function cron_run() {
     if ($CFG->enablecompletion) {
         // Completion cron
         mtrace('Starting the completion cron...');
-        require_once($CFG->libdir . '/completion/cron.php');
+        require_once($CFG->dirroot.'/completion/cron.php');
         completion_cron();
         mtrace('done');
     }
@@ -350,9 +350,12 @@ function cron_run() {
     cron_execute_plugin_type('gradereport');
     mtrace('Finished gradebook plugins');
 
+    // run calendar cron
+    require_once "{$CFG->dirroot}/calendar/lib.php";
+    calendar_cron();
 
     // Run external blog cron if needed
-    if ($CFG->useexternalblogs) {
+    if (!empty($CFG->enableblogs) && $CFG->useexternalblogs) {
         require_once($CFG->dirroot . '/blog/lib.php');
         mtrace("Fetching external blog entries...", '');
         $sql = "timefetched < ? OR timefetched = 0";
@@ -364,13 +367,20 @@ function cron_run() {
         mtrace('done.');
     }
     // Run blog associations cleanup
-    if ($CFG->useblogassociations) {
+    if (!empty($CFG->enableblogs) && $CFG->useblogassociations) {
         require_once($CFG->dirroot . '/blog/lib.php');
         // delete entries whose contextids no longer exists
         mtrace("Deleting blog associations linked to non-existent contexts...", '');
         $DB->delete_records_select('blog_association', 'contextid NOT IN (SELECT id FROM {context})');
         mtrace('done.');
     }
+
+
+    // Run question bank clean-up.
+    mtrace("Starting the question bank cron...", '');
+    require_once($CFG->libdir . '/questionlib.php');
+    question_bank::cron();
+    mtrace('done.');
 
 
     //Run registration updated cron
@@ -458,10 +468,6 @@ function cron_run() {
     // cleanup file trash - not very important
     $fs = get_file_storage();
     $fs->cron();
-
-    mtrace("Clean up cached external files");
-    // 1 week
-    cache_file::cleanup(array(), 60 * 60 * 24 * 7);
 
     mtrace("Cron script completed correctly");
 

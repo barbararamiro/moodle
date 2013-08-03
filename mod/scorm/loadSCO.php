@@ -49,7 +49,16 @@ if (!empty($id)) {
 
 $PAGE->set_url('/mod/scorm/loadSCO.php', array('scoid'=>$scoid, 'id'=>$cm->id));
 
-require_login($course, false, $cm);
+if (!isloggedin()) { // Prevent login page from being shown in iframe.
+    // Using simple html instead of exceptions here as shown inside iframe/object.
+    echo html_writer::start_tag('html');
+    echo html_writer::tag('head', '');
+    echo html_writer::tag('body', get_string('loggedinnot'));
+    echo html_writer::end_tag('html');
+    exit;
+}
+
+require_login($course, false, $cm, false); // Call require_login anyway to set up globals correctly.
 
 //check if scorm closed
 $timenow = time();
@@ -61,7 +70,7 @@ if ($scorm->timeclose !=0) {
     }
 }
 
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
+$context = context_module::instance($cm->id);
 
 if (!empty($scoid)) {
     //
@@ -70,7 +79,11 @@ if (!empty($scoid)) {
     if ($sco = scorm_get_sco($scoid)) {
         if ($sco->launch == '') {
             // Search for the next launchable sco
-            if ($scoes = $DB->get_records_select('scorm_scoes', "scorm = ? AND '.$DB->sql_isnotempty('scorm_scoes', 'launch', false, true).' AND id > ?", array($scorm->id, $sco->id), 'id ASC')) {
+            if ($scoes = $DB->get_records_select(
+                    'scorm_scoes',
+                    'scorm = ? AND '.$DB->sql_isnotempty('scorm_scoes', 'launch', false, true).' AND id > ?',
+                    array($scorm->id, $sco->id),
+                    'id ASC')) {
                 $sco = current($scoes);
             }
         }
@@ -80,7 +93,12 @@ if (!empty($scoid)) {
 // If no sco was found get the first of SCORM package
 //
 if (!isset($sco)) {
-    $scoes = $DB->get_records_select('scorm_scoes', "scorm = ? AND ".$DB->sql_isnotempty('scorm_scoes', 'launch', false, true), array($scorm->id), 'id ASC');
+    $scoes = $DB->get_records_select(
+        'scorm_scoes',
+        'scorm = ? AND '.$DB->sql_isnotempty('scorm_scoes', 'launch', false, true),
+        array($scorm->id),
+        'id ASC'
+    );
     $sco = current($scoes);
 }
 

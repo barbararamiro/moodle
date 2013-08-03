@@ -29,7 +29,7 @@ require_once('../config.php');
 require_once('lib.php');
 
 require_login();
-$context = get_context_instance(CONTEXT_SYSTEM);
+$context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url('/blog/external_blogs.php'));
 require_capability('moodle/blog:manageexternal', $context);
@@ -44,7 +44,16 @@ $message = null;
 if ($delete && confirm_sesskey()) {
     $externalbloguserid = $DB->get_field('blog_external', 'userid', array('id' => $delete));
     if ($externalbloguserid == $USER->id) {
+        // Delete the external blog
         $DB->delete_records('blog_external', array('id' => $delete));
+
+        // Delete the external blog's posts
+        $deletewhere = 'module = :module
+                            AND userid = :userid
+                            AND ' . $DB->sql_isnotempty('post', 'uniquehash', false, false) . '
+                            AND ' . $DB->sql_compare_text('content') . ' = ' . $DB->sql_compare_text(':delete');
+        $DB->delete_records_select('post', $deletewhere, array('module' => 'blog_external', 'userid' => $USER->id, 'delete' => $delete));
+
         $message = get_string('externalblogdeleted', 'blog');
     }
 }

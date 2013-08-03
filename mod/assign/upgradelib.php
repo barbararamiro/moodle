@@ -89,7 +89,16 @@ class assign_upgrade_manager {
         $data->allowsubmissionsfromdate = $oldassignment->timeavailable;
         $data->grade = $oldassignment->grade;
         $data->submissiondrafts = $oldassignment->resubmit;
-        $data->preventlatesubmissions = $oldassignment->preventlate;
+        $data->requiresubmissionstatement = 0;
+        $data->cutoffdate = 0;
+        // New way to specify no late submissions.
+        if ($oldassignment->preventlate) {
+            $data->cutoffdate = $data->duedate;
+        }
+        $data->teamsubmission = 0;
+        $data->requireallteammemberssubmit = 0;
+        $data->teamsubmissiongroupingid = 0;
+        $data->blindmarking = 0;
 
         $newassignment = new assign(null, null, null);
 
@@ -161,6 +170,11 @@ class assign_upgrade_manager {
                 $DB->update_record('course_completion_criteria', $criteria);
             }
             $completiondone = true;
+
+            // Migrate log entries so we don't lose them.
+            $logparams = array('cmid' => $oldcoursemodule->id, 'course' => $oldcoursemodule->course);
+            $DB->set_field('log', 'module', 'assign', $logparams);
+            $DB->set_field('log', 'cmid', $newcoursemodule->id, $logparams);
 
 
             // copy all the submission data (and get plugins to do their bit)
@@ -260,6 +274,10 @@ class assign_upgrade_manager {
                     $DB->update_record('course_completion_criteria', $criteria);
                 }
             }
+            // Roll back the log changes
+            $logparams = array('cmid' => $newcoursemodule->id, 'course' => $newcoursemodule->course);
+            $DB->set_field('log', 'module', 'assignment', $logparams);
+            $DB->set_field('log', 'cmid', $oldcoursemodule->id, $logparams);
             // roll back the advanced grading update
             if ($gradingarea) {
                 foreach ($gradeidmap as $newgradeid => $oldsubmissionid) {
@@ -328,12 +346,7 @@ class assign_upgrade_manager {
             return false;
         }
 
-        $mod = new stdClass();
-        $mod->course = $newcm->course;
-        $mod->section = $section->section;
-        $mod->coursemodule = $newcm->id;
-        $mod->id = $newcm->id;
-        $newcm->section = add_mod_to_section($mod, $cm);
+        $newcm->section = course_add_cm_to_section($newcm->course, $newcm->id, $section->section);
 
         // make sure visibility is set correctly (in particular in calendar)
         // note: allow them to set it even without moodle/course:activityvisibility

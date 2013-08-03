@@ -742,7 +742,8 @@ class grade_item extends grade_object {
 
             // Standardise score to the new grade range
             // NOTE: this is not compatible with current assignment grading
-            if ($this->itemmodule != 'assignment' and ($rawmin != $this->grademin or $rawmax != $this->grademax)) {
+            $isassignmentmodule = ($this->itemmodule == 'assignment') || ($this->itemmodule == 'assign');
+            if (!$isassignmentmodule && ($rawmin != $this->grademin or $rawmax != $this->grademax)) {
                 $rawgrade = grade_grade::standardise_score($rawgrade, $rawmin, $rawmax, $this->grademin, $this->grademax);
             }
 
@@ -1422,30 +1423,33 @@ class grade_item extends grade_object {
      * Refetch grades from modules, plugins.
      *
      * @param int $userid optional, limit the refetch to a single user
+     * @return bool Returns true on success or if there is nothing to do
      */
     public function refresh_grades($userid=0) {
         global $DB;
         if ($this->itemtype == 'mod') {
             if ($this->is_outcome_item()) {
                 //nothing to do
-                return;
+                return true;
             }
 
             if (!$activity = $DB->get_record($this->itemmodule, array('id' => $this->iteminstance))) {
                 debugging("Can not find $this->itemmodule activity with id $this->iteminstance");
-                return;
+                return false;
             }
 
             if (!$cm = get_coursemodule_from_instance($this->itemmodule, $activity->id, $this->courseid)) {
                 debugging('Can not find course module');
-                return;
+                return false;
             }
 
             $activity->modname    = $this->itemmodule;
             $activity->cmidnumber = $cm->idnumber;
 
-            grade_update_mod_grades($activity);
+            return grade_update_mod_grades($activity, $userid);
         }
+
+        return true;
     }
 
     /**

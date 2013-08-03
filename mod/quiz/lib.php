@@ -373,7 +373,7 @@ function quiz_has_grades($quiz) {
  */
 function quiz_user_outline($course, $user, $mod, $quiz) {
     global $DB, $CFG;
-    require_once("$CFG->libdir/gradelib.php");
+    require_once($CFG->libdir . '/gradelib.php');
     $grades = grade_get_grades($course->id, 'mod', 'quiz', $quiz->id, $user->id);
 
     if (empty($grades->items[0]->grades)) {
@@ -411,7 +411,7 @@ function quiz_user_outline($course, $user, $mod, $quiz) {
 function quiz_user_complete($course, $user, $mod, $quiz) {
     global $DB, $CFG, $OUTPUT;
     require_once($CFG->libdir . '/gradelib.php');
-    require_once($CFG->libdir . '/mod/quiz/locallib.php');
+    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
     $grades = grade_get_grades($course->id, 'mod', 'quiz', $quiz->id, $user->id);
     if (!empty($grades->items[0]->grades)) {
@@ -603,7 +603,7 @@ function quiz_format_question_grade($quiz, $grade) {
  */
 function quiz_update_grades($quiz, $userid = 0, $nullifnone = true) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->libdir . '/gradelib.php');
 
     if ($quiz->grade == 0) {
         quiz_grade_item_update($quiz);
@@ -661,7 +661,7 @@ function quiz_upgrade_grades() {
 function quiz_grade_item_update($quiz, $grades = null) {
     global $CFG, $OUTPUT;
     require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->libdir . '/gradelib.php');
 
     if (array_key_exists('cmidnumber', $quiz)) { // May not be always present.
         $params = array('itemname' => $quiz->name, 'idnumber' => $quiz->cmidnumber);
@@ -792,7 +792,7 @@ function quiz_refresh_events($courseid = 0) {
 function quiz_get_recent_mod_activity(&$activities, &$index, $timestart,
         $courseid, $cmid, $userid = 0, $groupid = 0) {
     global $CFG, $COURSE, $USER, $DB;
-    require_once('locallib.php');
+    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
     if ($COURSE->id == $courseid) {
         $course = $COURSE;
@@ -839,7 +839,7 @@ function quiz_get_recent_mod_activity(&$activities, &$index, $timestart,
         return;
     }
 
-    $context         = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context         = context_module::instance($cm->id);
     $accessallgroups = has_capability('moodle/site:accessallgroups', $context);
     $viewfullnames   = has_capability('moodle/site:viewfullnames', $context);
     $grader          = has_capability('mod/quiz:viewreports', $context);
@@ -885,6 +885,7 @@ function quiz_get_recent_mod_activity(&$activities, &$index, $timestart,
         $tmpactivity->sectionnum = $cm->sectionnum;
         $tmpactivity->timestamp  = $attempt->timefinish;
 
+        $tmpactivity->content = new stdClass();
         $tmpactivity->content->attemptid = $attempt->id;
         $tmpactivity->content->attempt   = $attempt->attempt;
         if (quiz_has_grades($quiz) && $options->marks >= question_display_options::MARK_AND_MAX) {
@@ -895,6 +896,7 @@ function quiz_get_recent_mod_activity(&$activities, &$index, $timestart,
             $tmpactivity->content->maxgrade  = null;
         }
 
+        $tmpactivity->user = new stdClass();
         $tmpactivity->user->id        = $attempt->userid;
         $tmpactivity->user->firstname = $attempt->firstname;
         $tmpactivity->user->lastname  = $attempt->lastname;
@@ -1024,6 +1026,8 @@ function quiz_process_options($quiz) {
         $quiz->feedbackboundaries[-1] = $quiz->grade + 1;
         $quiz->feedbackboundaries[$numboundaries] = 0;
         $quiz->feedbackboundarycount = $numboundaries;
+    } else {
+        $quiz->feedbackboundarycount = -1;
     }
 
     // Combing the individual settings into the review columns.
@@ -1075,7 +1079,7 @@ function quiz_after_add_or_update($quiz) {
 
     // We need to use context now, so we need to make sure all needed info is already in db.
     $DB->set_field('course_modules', 'instance', $quiz->id, array('id'=>$cmid));
-    $context = get_context_instance(CONTEXT_MODULE, $cmid);
+    $context = context_module::instance($cmid);
 
     // Save the feedback.
     $DB->delete_records('quiz_feedback', array('quizid' => $quiz->id));
@@ -1150,8 +1154,14 @@ function quiz_update_events($quiz, $override = null) {
         $addopen  = empty($current->id) || !empty($current->timeopen);
         $addclose = empty($current->id) || !empty($current->timeclose);
 
+        if (!empty($quiz->coursemodule)) {
+            $cmid = $quiz->coursemodule;
+        } else {
+            $cmid = get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course)->id;
+        }
+
         $event = new stdClass();
-        $event->description = format_module_intro('quiz', $quiz, $quiz->coursemodule);
+        $event->description = format_module_intro('quiz', $quiz, $cmid);
         // Events module won't show user events when the courseid is nonzero.
         $event->courseid    = ($userid) ? 0 : $quiz->course;
         $event->groupid     = $groupid;
@@ -1308,15 +1318,13 @@ function quiz_reset_gradebook($courseid, $type='') {
  */
 function quiz_reset_userdata($data) {
     global $CFG, $DB;
-    require_once($CFG->libdir.'/questionlib.php');
+    require_once($CFG->libdir . '/questionlib.php');
 
     $componentstr = get_string('modulenameplural', 'quiz');
     $status = array();
 
     // Delete attempts.
     if (!empty($data->reset_quiz_attempts)) {
-        require_once($CFG->libdir . '/questionlib.php');
-
         question_engine::delete_questions_usage_by_activities(new qubaid_join(
                 '{quiz_attempts} quiza JOIN {quiz} quiz ON quiza.quiz = quiz.id',
                 'quiza.uniqueid', 'quiz.course = :quizcourseid',
@@ -1343,8 +1351,18 @@ function quiz_reset_userdata($data) {
 
     // Updating dates - shift may be negative too.
     if ($data->timeshift) {
+        $DB->execute("UPDATE {quiz_overrides}
+                         SET timeopen = timeopen + ?
+                       WHERE quiz IN (SELECT id FROM {quiz} WHERE course = ?)
+                         AND timeopen <> 0", array($data->timeshift, $data->courseid));
+        $DB->execute("UPDATE {quiz_overrides}
+                         SET timeclose = timeclose + ?
+                       WHERE quiz IN (SELECT id FROM {quiz} WHERE course = ?)
+                         AND timeclose <> 0", array($data->timeshift, $data->courseid));
+
         shift_course_mod_dates('quiz', array('timeopen', 'timeclose'),
                 $data->timeshift, $data->courseid);
+
         $status[] = array(
             'component' => $componentstr,
             'item' => get_string('openclosedatesupdated', 'quiz'),
@@ -1352,55 +1370,6 @@ function quiz_reset_userdata($data) {
     }
 
     return $status;
-}
-
-/**
- * Checks whether the current user is allowed to view a file uploaded in a quiz.
- * Teachers can view any from their courses, students can only view their own.
- *
- * @param int $attemptuniqueid int attempt id
- * @param int $questionid int question id
- * @return bool to indicate access granted or denied
- */
-function quiz_check_file_access($attemptuniqueid, $questionid, $context = null) {
-    global $USER, $DB, $CFG;
-    require_once(dirname(__FILE__).'/attemptlib.php');
-    require_once(dirname(__FILE__).'/locallib.php');
-
-    $attempt = $DB->get_record('quiz_attempts', array('uniqueid' => $attemptuniqueid));
-    $attemptobj = quiz_attempt::create($attempt->id);
-
-    // Does the question exist?
-    if (!$question = $DB->get_record('question', array('id' => $questionid))) {
-        return false;
-    }
-
-    if ($context === null) {
-        $quiz = $DB->get_record('quiz', array('id' => $attempt->quiz));
-        $cm = get_coursemodule_from_id('quiz', $quiz->id);
-        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-    }
-
-    // Load those questions and the associated states.
-    $attemptobj->load_questions(array($questionid));
-    $attemptobj->load_question_states(array($questionid));
-
-    // Obtain the state.
-    $state = $attemptobj->get_question_state($questionid);
-    // Obtain the question.
-    $question = $attemptobj->get_question($questionid);
-
-    // Access granted if the current user submitted this file.
-    if ($attempt->userid != $USER->id) {
-        return false;
-    }
-    // Access granted if the current user has permission to grade quizzes in this course.
-    if (!(has_capability('mod/quiz:viewreports', $context) ||
-            has_capability('mod/quiz:grade', $context))) {
-        return false;
-    }
-
-    return array($question, $state, array());
 }
 
 /**
@@ -1439,7 +1408,7 @@ function quiz_print_overview($courses, &$htmlarray) {
                     userdate($quiz->timeclose)) . '</div>';
 
             // Now provide more information depending on the uers's role.
-            $context = get_context_instance(CONTEXT_MODULE, $quiz->coursemodule);
+            $context = context_module::instance($quiz->coursemodule);
             if (has_capability('mod/quiz:viewreports', $context)) {
                 // For teacher-like people, show a summary of the number of student attempts.
                 // The $quiz objects returned by get_all_instances_in_course have the necessary $cm
@@ -1556,7 +1525,7 @@ function quiz_supports($feature) {
         case FEATURE_MOD_INTRO:                 return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:   return true;
         case FEATURE_GRADE_HAS_GRADE:           return true;
-        case FEATURE_GRADE_OUTCOMES:            return false;
+        case FEATURE_GRADE_OUTCOMES:            return true;
         case FEATURE_BACKUP_MOODLE2:            return true;
         case FEATURE_SHOW_DESCRIPTION:          return true;
         case FEATURE_CONTROLS_GRADE_VISIBILITY: return true;
@@ -1570,7 +1539,7 @@ function quiz_supports($feature) {
  */
 function quiz_get_extra_capabilities() {
     global $CFG;
-    require_once($CFG->libdir.'/questionlib.php');
+    require_once($CFG->libdir . '/questionlib.php');
     $caps = question_get_all_capabilities();
     $caps[] = 'moodle/site:accessallgroups';
     return $caps;
@@ -1590,7 +1559,7 @@ function quiz_get_extra_capabilities() {
 function quiz_extend_navigation($quiznode, $course, $module, $cm) {
     global $CFG;
 
-    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    $context = context_module::instance($cm->id);
 
     if (has_capability('mod/quiz:view', $context)) {
         $url = new moodle_url('/mod/quiz/view.php', array('id'=>$cm->id));
@@ -1599,7 +1568,7 @@ function quiz_extend_navigation($quiznode, $course, $module, $cm) {
     }
 
     if (has_any_capability(array('mod/quiz:viewreports', 'mod/quiz:grade'), $context)) {
-        require_once($CFG->dirroot.'/mod/quiz/report/reportlib.php');
+        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
         $reportlist = quiz_report_list($context);
 
         $url = new moodle_url('/mod/quiz/report.php',

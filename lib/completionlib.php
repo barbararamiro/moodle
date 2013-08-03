@@ -31,10 +31,10 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Include the required completion libraries
  */
-require_once $CFG->libdir.'/completion/completion_aggregation.php';
-require_once $CFG->libdir.'/completion/completion_criteria.php';
-require_once $CFG->libdir.'/completion/completion_completion.php';
-require_once $CFG->libdir.'/completion/completion_criteria_completion.php';
+require_once $CFG->dirroot.'/completion/completion_aggregation.php';
+require_once $CFG->dirroot.'/completion/criteria/completion_criteria.php';
+require_once $CFG->dirroot.'/completion/completion_completion.php';
+require_once $CFG->dirroot.'/completion/completion_criteria_completion.php';
 
 
 /**
@@ -616,21 +616,25 @@ class completion_info {
      * @return void
      */
     public function set_module_viewed($cm, $userid=0) {
-        global $PAGE, $UNITTEST;
-        if ($PAGE->headerprinted && empty($UNITTEST->running)) {
+        global $PAGE;
+        if ($PAGE->headerprinted) {
             debugging('set_module_viewed must be called before header is printed',
                     DEBUG_DEVELOPER);
         }
+
         // Don't do anything if view condition is not turned on
         if ($cm->completionview == COMPLETION_VIEW_NOT_REQUIRED || !$this->is_enabled($cm)) {
             return;
         }
+
         // Get current completion state
-        $data = $this->get_data($cm, $userid);
+        $data = $this->get_data($cm, false, $userid);
+
         // If we already viewed it, don't do anything
         if ($data->viewed == COMPLETION_VIEWED) {
             return;
         }
+
         // OK, change state, save it, and update completion
         $data->viewed = COMPLETION_VIEWED;
         $this->internal_set_data($cm, $data);
@@ -709,6 +713,31 @@ class completion_info {
 
         $DB->delete_records('course_completions', array('course' => $this->course_id));
         $DB->delete_records('course_completion_crit_compl', array('course' => $this->course_id));
+    }
+
+    /**
+     * Deletes all activity and course completion data for an entire course
+     * (the below delete_all_state function does this for a single activity).
+     *
+     * Used by course reset page.
+     */
+    public function delete_all_completion_data() {
+        global $DB, $SESSION;
+
+        // Delete from database.
+        $DB->delete_records_select('course_modules_completion',
+                'coursemoduleid IN (SELECT id FROM {course_modules} WHERE course=?)',
+                array($this->course_id));
+
+        // Reset cache for current user.
+        if (isset($SESSION->completioncache) &&
+            array_key_exists($this->course_id, $SESSION->completioncache)) {
+
+            unset($SESSION->completioncache[$this->course_id]);
+        }
+
+        // Wipe course completion data too.
+        $this->delete_course_completion_data();
     }
 
     /**
@@ -942,8 +971,8 @@ class completion_info {
 
         if ($data->userid == $USER->id) {
             $SESSION->completioncache[$cm->course][$cm->id] = $data;
-            $reset = 'reset';
-            get_fast_modinfo($reset);
+            // reset modinfo for user (no need to call rebuild_course_cache())
+            get_fast_modinfo($cm->course, 0, true);
         }
     }
 
@@ -1040,7 +1069,8 @@ class completion_info {
         global $DB;
 
         list($enrolledsql, $params) = get_enrolled_sql(
-                context_course::instance($this->course->id), '', $groupid, true);
+                context_course::instance($this->course->id),
+                'moodle/course:isincompletionreports', $groupid, true);
 
         $sql = 'SELECT u.id, u.firstname, u.lastname, u.idnumber';
         if ($extracontext) {

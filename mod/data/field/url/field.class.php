@@ -52,15 +52,18 @@ class data_field_url extends data_field_base {
         $str = '<div title="'.s($this->field->description).'">';
         if (!empty($this->field->param1) and empty($this->field->param2)) {
             $str .= '<table><tr><td align="right">';
-            $str .= get_string('url','data').':</td><td><input type="text" name="field_'.$this->field->id.'_0" id="'.$fieldid.'" value="'.$url.'" size="60" /></td></tr>';
+            $str .= get_string('url','data').':</td><td>';
+            $str .= '<label class="accesshide" for="' . $fieldid . '">'. $this->field->name .'</label>';
+            $str .= '<input type="text" name="field_'.$this->field->id.'_0" id="'.$fieldid.'" value="'.$url.'" size="60" />';
+            $str .= '<button id="filepicker-button-'.$options->client_id.'" style="display:none">'.$straddlink.'</button></td></tr>';
             $str .= '<tr><td align="right">'.get_string('text','data').':</td><td><input type="text" name="field_'.$this->field->id.'_1" id="field_'.$this->field->id.'_1" value="'.s($text).'" size="60" /></td></tr>';
             $str .= '</table>';
         } else {
             // Just the URL field
+            $str .= '<label class="accesshide" for="' . $fieldid . '">'. $this->field->name .'</label>';
             $str .= '<input type="text" name="field_'.$this->field->id.'_0" id="'.$fieldid.'" value="'.s($url).'" size="60" />';
+            $str .= '<button id="filepicker-button-'.$options->client_id.'" style="display:none">'.$straddlink.'</button>';
         }
-
-        $str .= '<button id="filepicker-button-'.$options->client_id.'" style="display:none">'.$straddlink.'</button>';
 
         // print out file picker
         //$str .= $OUTPUT->render($fp);
@@ -74,7 +77,8 @@ class data_field_url extends data_field_base {
     }
 
     function display_search_field($value = '') {
-        return '<input type="text" size="16" name="f_'.$this->field->id.'" value="'.$value.'" />';
+        return '<label class="accesshide" for="f_'.$this->field->id.'">' . get_string('fieldname', 'data') . '</label>' .
+               '<input type="text" size="16" id="f_'.$this->field->id.'" name="f_'.$this->field->id.'" value="'.$value.'" />';
     }
 
     function parse_search_field() {

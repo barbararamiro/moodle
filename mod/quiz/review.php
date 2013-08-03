@@ -31,8 +31,8 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
 
 $attemptid = required_param('attempt', PARAM_INT);
-$page = optional_param('page', 0, PARAM_INT);
-$showall = optional_param('showall', 0, PARAM_BOOL);
+$page      = optional_param('page', 0, PARAM_INT);
+$showall   = optional_param('showall', 0, PARAM_BOOL);
 
 $url = new moodle_url('/mod/quiz/review.php', array('attempt'=>$attemptid));
 if ($page !== 0) {
@@ -44,6 +44,7 @@ if ($showall !== 0) {
 $PAGE->set_url($url);
 
 $attemptobj = quiz_attempt::create($attemptid);
+$page = $attemptobj->force_page_number_into_range($page);
 
 // Check login.
 require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
@@ -51,6 +52,8 @@ $attemptobj->check_review_capability();
 
 // Create an object to manage all the other (non-roles) access rules.
 $accessmanager = $attemptobj->get_access_manager(time());
+$accessmanager->setup_attempt_page($PAGE);
+
 $options = $attemptobj->get_display_options(true);
 
 // Check permissions.
@@ -102,7 +105,6 @@ if ($attemptobj->is_preview_user() && $attemptobj->is_own_attempt()) {
 $headtags = $attemptobj->get_html_head_contributions($page, $showall);
 $PAGE->set_title(format_string($attemptobj->get_quiz_name()));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
-$accessmanager->setup_attempt_page($PAGE);
 
 // Summary table start. ============================================================================
 

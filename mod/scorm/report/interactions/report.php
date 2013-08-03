@@ -35,7 +35,7 @@ class scorm_interactions_report extends scorm_default_report {
      */
     function display($scorm, $cm, $course, $download) {
         global $CFG, $DB, $OUTPUT, $PAGE;
-        $contextmodule = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $contextmodule = context_module::instance($cm->id);
         $action = optional_param('action', '', PARAM_ALPHA);
         $attemptids = optional_param_array('attemptid', array(), PARAM_RAW);
         $attemptsmode = optional_param('attemptsmode', SCORM_REPORT_ATTEMPTS_ALL_STUDENTS, PARAM_INT);
@@ -84,7 +84,7 @@ class scorm_interactions_report extends scorm_default_report {
                 groups_print_activity_menu($cm, new moodle_url($PAGE->url, $displayoptions));
             }
         }
-        $formattextoptions = array('context' => get_context_instance(CONTEXT_COURSE, $course->id));
+        $formattextoptions = array('context' => context_course::instance($course->id));
 
         // We only want to show the checkbox to delete attempts
         // if the user has permissions and if the report mode is showing attempts.
@@ -221,6 +221,18 @@ class scorm_interactions_report extends scorm_default_report {
                 $table->no_sorting('finish');
                 $table->no_sorting('score');
 
+                for($id = 0; $id < $questioncount; $id++) {
+                    if ($displayoptions['qtext']) {
+                        $table->no_sorting('question'.$id);
+                    }
+                    if ($displayoptions['resp']) {
+                        $table->no_sorting('response'.$id);
+                    }
+                    if ($displayoptions['right']) {
+                        $table->no_sorting('right'.$id);
+                    }
+                }
+
                 foreach ($scoes as $sco) {
                     if ($sco->launch != '') {
                         $table->no_sorting('scograde'.$sco->id);
@@ -315,13 +327,9 @@ class scorm_interactions_report extends scorm_default_report {
                 }
                 $rownum = 1;
             } else if ($download == 'CSV') {
-                $filename .= ".txt";
-                header("Content-Type: application/download\n");
-                header("Content-Disposition: attachment; filename=\"$filename\"");
-                header("Expires: 0");
-                header("Cache-Control: must-revalidate,post-check=0,pre-check=0");
-                header("Pragma: public");
-                echo implode("\t", $headers)." \n";
+                $csvexport = new csv_export_writer("tab");
+                $csvexport->set_filename($filename, ".txt");
+                $csvexport->add_data($headers);
             }
 
             if (!$download) {
@@ -534,8 +542,7 @@ class scorm_interactions_report extends scorm_default_report {
                         }
                         $rownum++;
                     } else if ($download == 'CSV') {
-                        $text = implode("\t", $row);
-                        echo $text." \n";
+                        $csvexport->add_data($row);
                     }
                 }
                 if (!$download) {
@@ -594,6 +601,7 @@ class scorm_interactions_report extends scorm_default_report {
                 $workbook->close();
                 exit;
             } else if ($download == 'CSV') {
+                $csvexport->download_file();
                 exit;
             }
         } else {

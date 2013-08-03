@@ -34,7 +34,7 @@ if ($hassiteconfig
     $temp = new admin_settingpage('userpolicies', new lang_string('userpolicies', 'admin'));
     if ($ADMIN->fulltree) {
         if (!during_initial_install()) {
-            $context = get_context_instance(CONTEXT_SYSTEM);
+            $context = context_system::instance();
 
             $otherroles      = array();
             $guestroles      = array();
@@ -151,6 +151,7 @@ if ($hassiteconfig
                     'institution' => new lang_string('institution'),
                 )));
         $temp->add(new admin_setting_configcheckbox('enablegravatar', new lang_string('enablegravatar', 'admin'), new lang_string('enablegravatar_help', 'admin'), 0));
+        $temp->add(new admin_setting_configtext('gravatardefaulturl', new lang_string('gravatardefaulturl', 'admin'), new lang_string('gravatardefaulturl_help', 'admin'), 'mm'));
     }
 
     $ADMIN->add('roles', $temp);

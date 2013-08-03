@@ -3,7 +3,7 @@
 // This file defines everything related to frontpage
 
 if (!during_initial_install()) { //do not use during installation
-    $frontpagecontext = get_context_instance(CONTEXT_COURSE, SITEID);
+    $frontpagecontext = context_course::instance(SITEID);
 
     if ($hassiteconfig or has_any_capability(array(
             'moodle/course:update',
@@ -48,8 +48,6 @@ if (!during_initial_install()) { //do not use during installation
                    '9' => '9',
                    '10' => '10')));
         $temp->add(new admin_setting_configtext('commentsperpage', new lang_string('commentsperpage', 'admin'), '', 15, PARAM_INT));
-
-        $temp->add(new admin_setting_configtext('coursesperpage', new lang_string('coursesperpage', 'admin'), new lang_string('configcoursesperpage', 'admin'), 20, PARAM_INT));
 
         // front page default role
         $options = array(0=>new lang_string('none')); // roles to choose from

@@ -34,6 +34,7 @@ require("../../config.php");
 require_once("lib.php");
 require_once($CFG->libdir.'/eventslib.php');
 require_once($CFG->libdir.'/enrollib.php');
+require_once($CFG->libdir . '/filelib.php');
 
 
 /// Keep out casual intruders
@@ -76,7 +77,7 @@ if (! $course = $DB->get_record("course", array("id"=>$data->courseid))) {
     die;
 }
 
-if (! $context = get_context_instance(CONTEXT_COURSE, $course->id)) {
+if (! $context = context_course::instance($course->id, IGNORE_MISSING)) {
     message_paypal_error_to_admin("Not a valid context id", $data);
     die;
 }
@@ -89,14 +90,17 @@ if (! $plugin_instance = $DB->get_record("enrol", array("id"=>$data->instanceid,
 $plugin = enrol_get_plugin('paypal');
 
 /// Open a connection back to PayPal to validate the data
-$header = '';
-$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
-$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+$c = new curl();
+$options = array(
+    'returntransfer' => true,
+    'httpheader' => array('application/x-www-form-urlencoded'),
+    'timeout' => 30,
+);
 $paypaladdr = empty($CFG->usepaypalsandbox) ? 'www.paypal.com' : 'www.sandbox.paypal.com';
-$fp = fsockopen ($paypaladdr, 80, $errno, $errstr, 30);
+$location = "https://$paypaladdr/cgi-bin/webscr";
+$result = $c->post($location, $req, $options);
 
-if (!$fp) {  /// Could not open a socket to PayPal - FAIL
+if (!$result) {  /// Could not connect to PayPal - FAIL
     echo "<p>Error: could not access paypal.com</p>";
     message_paypal_error_to_admin("Could not access paypal.com to verify payment", $data);
     die;
@@ -104,12 +108,9 @@ if (!$fp) {  /// Could not open a socket to PayPal - FAIL
 
 /// Connection is OK, so now we post the data to validate it
 
-fputs ($fp, $header.$req);
-
 /// Now read the response and check if everything is OK.
 
-while (!feof($fp)) {
-    $result = fgets($fp, 1024);
+if (strlen($result) > 0) {
     if (strcmp($result, "VERIFIED") == 0) {          // VALID PAYMENT!
 
 
@@ -187,7 +188,7 @@ while (!feof($fp)) {
             die;
         }
 
-        $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+        $coursecontext = context_course::instance($course->id, IGNORE_MISSING);
 
         // Check that amount paid is the correct amount
         if ( (float) $plugin_instance->cost <= 0 ) {
@@ -296,7 +297,6 @@ while (!feof($fp)) {
     }
 }
 
-fclose($fp);
 exit;
 
 

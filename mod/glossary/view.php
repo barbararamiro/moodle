@@ -251,7 +251,7 @@ $PAGE->set_url($url);
 if (!empty($CFG->enablerssfeeds) && !empty($CFG->glossary_enablerssfeeds)
     && $glossary->rsstype && $glossary->rssarticles) {
 
-    $rsstitle = format_string($course->shortname, true, array('context' => get_context_instance(CONTEXT_COURSE, $course->id))) . ': %fullname%';
+    $rsstitle = format_string($course->shortname, true, array('context' => context_course::instance($course->id))) . ': %fullname%';
     rss_add_http_header($context, 'mod_glossary', $glossary, $rsstitle);
 }
 
@@ -308,7 +308,7 @@ if ($showcommonelements) {
 
 /// Start to print glossary controls
 //        print_box_start('glossarycontrol clearfix');
-    echo '<div class="glossarycontrol" style="text-align: right">';
+    echo '<div class="glossarycontrol">';
     echo $availableoptions;
 
 /// The print icon
@@ -316,7 +316,7 @@ if ($showcommonelements) {
         if (has_capability('mod/glossary:manageentries', $context) or $glossary->allowprintview) {
 //                print_box_start('printicon');
             echo '<span class="wrap printicon">';
-            echo " <a title =\"". get_string("printerfriendly","glossary") ."\" href=\"print.php?id=$cm->id&amp;mode=$mode&amp;hook=".urlencode($hook)."&amp;sortkey=$sortkey&amp;sortorder=$sortorder&amp;offset=$offset\"><img class=\"icon\" src=\"".$OUTPUT->pix_url('print', 'glossary')."\" alt=\"". get_string("printerfriendly","glossary") . "\" /></a>";
+            echo " <a title =\"". get_string("printerfriendly","glossary") ."\" href=\"print.php?id=$cm->id&amp;mode=$mode&amp;hook=".urlencode($hook)."&amp;sortkey=$sortkey&amp;sortorder=$sortorder&amp;offset=$offset\"><img class=\"iconsmall\" src=\"".$OUTPUT->pix_url('t/print')."\" alt=\"". get_string("printerfriendly","glossary") . "\" /></a>";
             echo '</span>';
 //                print_box_end();
         }
@@ -448,7 +448,7 @@ if ($allentries) {
 
                     $user = $DB->get_record("user", array("id"=>$entry->userid));
                     echo $OUTPUT->user_picture($user, array('courseid'=>$course->id));
-                    $pivottoshow = fullname($user, has_capability('moodle/site:viewfullnames', get_context_instance(CONTEXT_COURSE, $course->id)));
+                    $pivottoshow = fullname($user, has_capability('moodle/site:viewfullnames', context_course::instance($course->id)));
                 } else {
                     echo '<th >';
                 }
