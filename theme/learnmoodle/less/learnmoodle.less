@@ -28,10 +28,14 @@
 // -------------------------
 @font-face {
     font-family: 'Open Sans'; 
-    src: url([[font:theme|OpenSans-Light.ttf]]);    
+    // Embedding font on moodle 2.6
+    // src: url([[font:theme|OpenSans-Light-webfont.woff]]);
+    // Embedding font on moodle 2.5
+    src: url('learnmoodle/fonts/OpenSans-Light-webfont.woff') format('woff');
 }
 @sansFontFamily:        "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @headingsFontWeight:    normal;
+
 
 // Wells
 // -------------------------
@@ -40,6 +44,7 @@
 
 // Navbar
 // -------------------------
+@navbarHeight:                    40px;
 @navbarBackgroundHighlight:       #252b36;
 @navbarLinkColorHover:            @grayLighter;
 @navbarLinkColorActive:           @grayLighter;
@@ -139,4 +144,15 @@
 
 .course-content ul li.section.main {
     border-bottom: 1px solid @grayLighter;
+}
+
+.coursebox > .info > .name a {
+    background-position: 0 13px;
+}
+
+.coursebox > .info > .name,
+.coursebox .content .teachers,
+.coursebox .content .courseimage,
+.coursebox .content .coursefile {
+    width:100%;
 }
