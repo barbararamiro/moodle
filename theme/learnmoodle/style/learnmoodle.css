@@ -13876,7 +13876,6 @@ input.fp-btn-choose {
     max-width: none;
     margin: 0 15px;
     padding: 0;
-    color: red;
     background-color: transparent;
     border: none;
     -webkit-border-radius: 0;
@@ -14795,7 +14794,7 @@ input[type="reset"] .caret {
 }
 @font-face {
   font-family: 'Open Sans';
-  src: url([[font:theme|OpenSans-Light.ttf]]);
+  src: url('learnmoodle/fonts/OpenSans-Light-webfont.woff') format('woff');
 }
 @media (max-width: 979px) {
   .nav-collapse .nav li a {
@@ -14863,4 +14862,13 @@ input[type="reset"] .caret {
 }
 .course-content ul li.section.main {
   border-bottom: 1px solid #eeeeee;
+}
+.coursebox > .info > .name a {
+  background-position: 0 13px;
+}
+.coursebox > .info > .name,
+.coursebox .content .teachers,
+.coursebox .content .courseimage,
+.coursebox .content .coursefile {
+  width: 100%;
 }
