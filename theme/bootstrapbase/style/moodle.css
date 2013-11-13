@@ -12974,6 +12974,18 @@ div#dock {
 #chat-messages .mdl-chat-my-entry .chat-message .user {
   font-weight: bold;
 }
+.dir-rtl #chat-input-area table.generaltable,
+.dir-rtl #chat-input-area table.generaltable td.cell {
+  border: 0;
+  margin: 3px 20px;
+}
+.dir-rtl #chat-input-area table.generaltable input,
+.dir-rtl #chat-input-area table.generaltable td.cell input {
+  margin-left: 10px;
+}
+.dir-rtl #chat-userlist #users-list img {
+  margin-left: 8px;
+}
 /* reports.less */
 #page-report-participation-index .participationselectform div label {
   display: inline;
