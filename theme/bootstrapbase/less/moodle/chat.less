@@ -26,7 +26,7 @@
     #chat-input-area table.generaltable,
     #chat-input-area table.generaltable td.cell {
         border: 0;
-        margin: 3px 15px;
+        padding: 3px 15px;
         input {
             margin-right: 10px;
         }
@@ -84,12 +84,11 @@
     .yui-layout-unit, yui-layout-bd {
     }
     .yui-layout-unit-bottom {
-        margin-right: 30ps;
+        margin-right: 30px;
     }
     #chat-input-area {
         table.generaltable {
             td.cell {
-                border: 1px red solid;
                 margin: 3px 0px;
                 input {
                     margin-left: 10px;
@@ -108,7 +107,6 @@
         }
     }
     #chat-messages {
-        margin: 20px 50px 20px 25px;
         .chat-message.course-theme {
             .time {
                 float: left;
@@ -125,5 +123,17 @@
                 text-align: right;
             }
         }
+    }
+}
+.yui-skin-sam .path-mod-chat-gui_ajax.dir-rtl {
+
+    .yui-layout-unit-right {
+        padding: 0;
+    }
+    yui-layout-unit div.yui-layout-bd {
+        text-align: right;
+    }
+    .yui-layout-unit div.yui-layout-bd {
+        text-align: right;
     }
 }
