@@ -12911,7 +12911,7 @@ div#dock {
 .path-mod-chat-gui_ajax #chat-input-area table.generaltable,
 .path-mod-chat-gui_ajax #chat-input-area table.generaltable td.cell {
   border: 0;
-  margin: 3px 15px;
+  padding: 3px 15px;
 }
 .path-mod-chat-gui_ajax #chat-input-area table.generaltable input,
 .path-mod-chat-gui_ajax #chat-input-area table.generaltable td.cell input {
@@ -12965,10 +12965,9 @@ div#dock {
   font-weight: bold;
 }
 .path-mod-chat-gui_ajax.dir-rtl .yui-layout-unit-bottom {
-  margin-right: 30ps;
+  margin-right: 30px;
 }
 .path-mod-chat-gui_ajax.dir-rtl #chat-input-area table.generaltable td.cell {
-  border: 1px red solid;
   margin: 3px 0px;
 }
 .path-mod-chat-gui_ajax.dir-rtl #chat-input-area table.generaltable td.cell input {
@@ -12976,9 +12975,6 @@ div#dock {
 }
 .path-mod-chat-gui_ajax.dir-rtl #chat-userlist #users-list img {
   margin-left: 8px;
-}
-.path-mod-chat-gui_ajax.dir-rtl #chat-messages {
-  margin: 20px 50px 20px 25px;
 }
 .path-mod-chat-gui_ajax.dir-rtl #chat-messages .chat-message.course-theme .time {
   float: left;
@@ -12992,6 +12988,15 @@ div#dock {
   height: 20px;
 }
 .path-mod-chat-gui_ajax.dir-rtl #chat-messages .chat-message.course-theme .text {
+  text-align: right;
+}
+.yui-skin-sam .path-mod-chat-gui_ajax.dir-rtl .yui-layout-unit-right {
+  padding: 0;
+}
+.yui-skin-sam .path-mod-chat-gui_ajax.dir-rtl yui-layout-unit div.yui-layout-bd {
+  text-align: right;
+}
+.yui-skin-sam .path-mod-chat-gui_ajax.dir-rtl .yui-layout-unit div.yui-layout-bd {
   text-align: right;
 }
 /* reports.less */
