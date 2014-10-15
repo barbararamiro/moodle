@@ -45,6 +45,7 @@ $string['overrideall'] = 'Override all grades';
 $string['overridefor'] = 'Override for {$a}';
 $string['overridenone'] = 'Override no grades';
 $string['pluginname'] = 'Single view';
+$string['selectheading'] = 'Grade user or grade item';
 $string['selectgradeitem'] = 'Select grade item';
 $string['selectuser'] = 'Select user';
 $string['singleview:view'] = 'View report';

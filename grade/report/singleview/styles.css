@@ -1,17 +1,22 @@
 .path-grade-report-singleview div.generalbox {
-  margin: 0 20px 15px 20px;
+    margin: 0 20px 15px 20px;
 }
 
 .path-grade-report-singleview div.generalbox div.singleselect form div {
-  text-align: center;
+    text-align: center;
 }
 
 .path-grade-report-singleview div.generalbox table.generaltable {
-  margin: 0 auto 15px auto;
+    margin: 0 auto 15px auto;
 }
 
 .path-grade-report-singleview div.generalbox form div {
-  text-align: center;
+    text-align: center;
+}
+
+.path-grade-report-singleview .singleselect {
+    display: inline;
+    float: right;
 }
 
 .path-grade-report-singleview .singleview_buttons {
@@ -22,12 +27,12 @@
    text-align: center;
 }
 
-.path-grade-report-singleview input[name^="finalgrade"] {
-    width: 50px;
+.path-grade-report-singleview #region-main h2 {
+   text-align: center;
 }
 
-.path-grade-report-singleview #region-main h2, .paging{
-   text-align: center;
+.path-grade-report-singleview input[name^="finalgrade"] {
+    width: 50px;
 }
 
 .path-grade-report-singleview itemnav.previtem {
