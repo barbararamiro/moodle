@@ -25,6 +25,7 @@
 namespace gradereport_singleview\local\screen;
 
 use gradereport_singleview;
+use single_select;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die;
@@ -99,9 +100,10 @@ class select extends screen {
             );
 
             $url = new moodle_url('/grade/report/singleview/index.php', $params);
-            $html .= $OUTPUT->heading($screen->description());
 
-            $html .= $OUTPUT->single_select($url, 'itemid', $options);
+            $select = new single_select($url, 'itemid', $options);
+            $select->set_label($screen->description(), array('class' => 'selectlabel'));
+            $html .= $OUTPUT->render($select);
         }
 
         if (empty($html)) {

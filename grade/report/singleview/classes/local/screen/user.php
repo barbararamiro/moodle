@@ -58,7 +58,7 @@ class user extends tablelike implements selectable_items {
      * @return string
      */
     public function description() {
-        return get_string('gradeitems', 'grades');
+        return get_string('selectgradeitem', 'gradereport_singleview');
     }
 
     /**
@@ -249,7 +249,7 @@ class user extends tablelike implements selectable_items {
      * @return string
      */
     public function heading() {
-        return fullname($this->item);
+        return get_string('userheading', 'gradereport_singleview', fullname($this->item));
     }
 
     /**

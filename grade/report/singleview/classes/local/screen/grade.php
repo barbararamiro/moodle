@@ -76,7 +76,7 @@ class grade extends tablelike implements selectable_items, filterable_items {
      * @return string
      */
     public function description() {
-        return get_string('users');
+        return get_string('selectuser', 'gradereport_singleview');
     }
 
     /**
@@ -264,7 +264,7 @@ class grade extends tablelike implements selectable_items, filterable_items {
      * @return string
      */
     public function heading() {
-        return $this->item->get_name();
+        return get_string('gradeheading', 'gradereport_singleview', $this->item->get_name());
     }
 
     /**
