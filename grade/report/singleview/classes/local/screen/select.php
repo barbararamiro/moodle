@@ -67,6 +67,15 @@ class select extends screen {
     }
 
     /**
+     * Get the heading for this page.
+     *
+     * @return string
+     */
+    public function heading() {
+        return get_string('selectheading', 'gradereport_singleview');
+    }
+
+    /**
      * Return the HTML for the page.
      *
      * @return string
@@ -101,8 +110,7 @@ class select extends screen {
 
             $url = new moodle_url('/grade/report/singleview/index.php', $params);
 
-            $select = new single_select($url, 'itemid', $options);
-            $select->set_label($screen->description(), array('class' => 'selectlabel'));
+            $select = new single_select($url, 'itemid', $options, '', array('' => $screen->description()));
             $html .= $OUTPUT->render($select);
         }
 
