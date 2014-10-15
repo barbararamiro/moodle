@@ -110,7 +110,8 @@ class select extends screen {
 
             $url = new moodle_url('/grade/report/singleview/index.php', $params);
 
-            $select = new single_select($url, 'itemid', $options, '', array('' => $screen->description()));
+            $select = new single_select($url, 'itemid', $options);
+            $select->set_label($screen->description(), array('class' => 'selectlabel'));
             $html .= $OUTPUT->render($select);
         }
 
