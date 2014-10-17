@@ -15,16 +15,12 @@
 }
 
 .path-grade-report-singleview .singleselect {
-    display: inline;
+    clear: both;
     float: right;
 }
 .path-grade-report-singleview .generalbox .singleselect select,
 .path-grade-report-singleview .generalbox .submit input {
   margin: 0 0 10px 5px;
-}
-.path-grade-report-singleview .generaltable {
-  width: 100%;
-  text-align: left;
 }
 .path-grade-report-singleview #region-main h2 {
    text-align: center;
@@ -33,28 +29,21 @@
 .path-grade-report-singleview input[name^="finalgrade"] {
     width: 50px;
 }
-.path-grade-report-singleview .singleview_bulk {
-  text-align: center;
+.path-grade-report-singleview itemnav.previtem {
+   clear: both;
+   float:left;
 }
-.path-grade-report-singleview .singleview_bulk label:nth-of-type(2) {
-  display: inline-block;
+.path-grade-report-singleview small.nextitem {
+   clear: both;
+   float:right;
 }
-
-.dir-rtl.path-grade-report-singleview .nextitem {
-  float: left;
+.path-grade-report-singleview.dir-rtl small.nextitem {
+   clear: both;
+   float:left;
 }
-.dir-rtl.path-grade-report-singleview .generalbox {
-  text-align: left;
-}
-.dir-rtl.path-grade-report-singleview .generalbox .singleselect select,
-.dir-rtl.path-grade-report-singleview .generalbox .submit input  {
-  margin: 0 5px 10px 0;
-}
-.dir-rtl.path-grade-report-singleview .generaltable {
-  text-align: right;
-}
-.dir-rtl.path-grade-report-singleview .generaltable .header {
-  text-align: right;
+.path-grade-report-singleview.dir-rtl small.previtem {
+   clear: both;
+   float:right;
 }
 .dir-rtl.path-grade-report-singleview .singleview_bulk input[type="checkbox"] {
   margin-right: 0;
