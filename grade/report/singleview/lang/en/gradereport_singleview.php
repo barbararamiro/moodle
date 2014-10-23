@@ -24,7 +24,6 @@
 
 // General Strings.
 $string['all_grades'] = 'All grades';
-$string['assessmentname'] = 'Assessment Name';
 $string['blanks'] = 'Empty grades';
 $string['bulkappliesto'] = 'for';
 $string['bulkinsertgrade'] = 'Bulk insert';
@@ -32,8 +31,8 @@ $string['bulkfor'] = 'Grades for {$a}';
 $string['exclude'] = 'Exclude';
 $string['excludeall'] = 'Exclude all grades';
 $string['excludefor'] = 'Exclude for {$a}';
-$string['excludenone'] = 'Exclude no grades';
 $string['eventgradereportviewed'] = 'Grade single view report viewed.';
+$string['excludenone'] = 'Do not exclude any grades';
 $string['feedbackfor'] = 'Feedback for {$a}';
 $string['filtergrades'] = 'Show grades for {$a}.';
 $string['gradefor'] = 'Grade for {$a}';
@@ -44,7 +43,7 @@ $string['notvalid'] = 'Not a valid Single view screen: {$a}';
 $string['override'] = 'Override';
 $string['overrideall'] = 'Override all grades';
 $string['overridefor'] = 'Override for {$a}';
-$string['overridenone'] = 'Override no grades';
+$string['overridenone'] = 'Do not override any grades';
 $string['pluginname'] = 'Single view';
 $string['selectheading'] = 'Grade user or grade item';
 $string['selectgradeitem'] = 'Select grade item';
