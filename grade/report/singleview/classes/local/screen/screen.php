@@ -157,15 +157,21 @@ abstract class screen {
     public function make_toggle($key) {
         $attrs = array('href' => '#');
 
+        $labelall = html_writer::tag('label', get_string($key . 'all', 'gradereport_singleview'),
+            array('for' => $key . 'all', 'class' => 'accesshide'));
+
         $all = html_writer::tag('a', get_string('all'), $attrs + array(
-            'class' => 'include all ' . $key
+            'class' => 'include all ' . $key, 'name' => $key . 'all'
         ));
+
+        $labelnone = html_writer::tag('label', get_string($key . 'none', 'gradereport_singleview'),
+            array('for' => $key . 'none', 'class' => 'accesshide'));
 
         $none = html_writer::tag('a', get_string('none'), $attrs + array(
-            'class' => 'include none ' . $key
+            'class' => 'include none ' . $key, 'name' => $key . 'none'
         ));
 
-        return html_writer::tag('span', "$all / $none", array(
+        return html_writer::tag('span', "$labelall $all / $labelnone $none", array(
             'class' => 'inclusion_links'
         ));
     }
