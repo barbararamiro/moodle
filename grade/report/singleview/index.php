@@ -132,22 +132,26 @@ if (!empty($options)) {
         $navparams['itemid'] = $reloptionssorting[$i - 1];
         $link = new moodle_url('/grade/report/singleview/index.php', $navparams);
         $navprev = html_writer::link($link, $OUTPUT->larrow() . ' ' . $reloptions[$reloptionssorting[$i - 1]]);
-        $graderleftnav = html_writer::tag('small', $navprev, array('class' => 'itemnav previtem'));
+        $graderleftnav = html_writer::tag('div', $navprev, array('class' => 'itemnav previtem'));
     }
     if ($i < count($reloptionssorting) - 1) {
         $navparams['itemid'] = $reloptionssorting[$i + 1];
         $link = new moodle_url('/grade/report/singleview/index.php', $navparams);
         $navnext = html_writer::link($link, $reloptions[$reloptionssorting[$i + 1]] . ' ' . $OUTPUT->rarrow());
-        $graderrightnav = html_writer::tag('small', $navnext, array('class' => 'itemnav nextitem'));
+        $graderrightnav = html_writer::tag('div', $navnext, array('class' => 'itemnav nextitem'));
     }
 }
 
-if (!is_null($graderleftnav)) {
-    echo $graderleftnav;
+if ((!is_null($graderleftnav)) || (!is_null($graderrightnav))) {
+    $quicknav = html_writer::start_tag('div', array('class' => 'quicknav'));
+    $quicknav .= $graderleftnav;
+    $quicknav .= $graderrightnav;
+    $quicknav .= html_writer::end_tag('div');
+} else {
+    $quicknav = '';
 }
-if (!is_null($graderrightnav)) {
-    echo $graderrightnav;
-}
+
+echo $quicknav;
 
 if ($report->screen->supports_paging()) {
     echo $report->screen->pager();
@@ -174,12 +178,7 @@ if ($report->screen->supports_paging()) {
     echo $report->screen->pager();
 }
 
-if (!is_null($graderleftnav)) {
-    echo $graderleftnav;
-}
-if (!is_null($graderrightnav)) {
-    echo $graderrightnav;
-}
+echo $quicknav;
 
 if ($report->screen->display_group_selector()) {
     echo $report->group_selector;

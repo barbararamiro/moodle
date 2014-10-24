@@ -84,7 +84,7 @@ class select extends screen {
     public function html() {
         global $OUTPUT;
 
-        $html = html_writer::start_tag('div');
+        $html = html_writer::start_tag('div', array('class' => 'itemuserselect'));
 
         $types = gradereport_singleview::valid_screens();
 
