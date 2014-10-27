@@ -155,8 +155,6 @@ abstract class tablelike extends screen {
     public function html() {
         global $OUTPUT;
 
-        $select = new \gradereport_singleview\local\screen\select($this->courseid, $this->itemid, $this->groupid);
-
         if (!empty($this->initerrors)) {
             $warnings = '';
             foreach ($this->initerrors as $mesg) {
@@ -194,9 +192,9 @@ abstract class tablelike extends screen {
         $sessionvalidation = html_writer::empty_tag('input',
             array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
 
-        return $select->html() . html_writer::tag('form',
+        return html_writer::tag('form',
             $buttons . html_writer::table($table) . $this->bulk_insert() . $buttons . $sessionvalidation,
-            array('method' => 'POST')) . $select->html();
+            array('method' => 'POST'));
     }
 
     /**
@@ -220,7 +218,7 @@ abstract class tablelike extends screen {
     public function buttons() {
         $save = html_writer::empty_tag('input', array(
             'type' => 'submit',
-            'value' => get_string('update'),
+            'value' => get_string('savechanges'),
             'tabindex' => $this->get_tabindex(),
         ));
 

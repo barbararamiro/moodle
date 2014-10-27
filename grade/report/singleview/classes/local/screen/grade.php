@@ -159,8 +159,6 @@ class grade extends tablelike implements selectable_items, filterable_items {
      */
     public function original_headers() {
         return array(
-            '', // For filter icon.
-            '', // For user picture.
             get_string('firstname') . ' (' . get_string('alternatename') . ') ' . get_string('lastname'),
             get_string('range', 'grades'),
             get_string('grade', 'grades'),
@@ -207,8 +205,8 @@ class grade extends tablelike implements selectable_items, filterable_items {
         $grade->label = $fullname;
 
         $line = array(
-            $OUTPUT->action_icon($this->format_link('user', $item->id), new pix_icon('t/editstring', $iconstring)),
-            $OUTPUT->user_picture($item),
+            $OUTPUT->action_icon($this->format_link('user', $item->id), new pix_icon('t/editstring', $iconstring)) .
+            $OUTPUT->user_picture($item) .
             html_writer::link($url, $fullname),
             $this->item_range()
         );

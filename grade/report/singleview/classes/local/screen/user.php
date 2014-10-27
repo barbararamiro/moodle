@@ -89,7 +89,7 @@ class user extends tablelike implements selectable_items {
      * @return bool
      */
     public function display_group_selector() {
-        return false;
+        return true;
     }
 
     /**
@@ -138,8 +138,6 @@ class user extends tablelike implements selectable_items {
      */
     public function original_headers() {
         return array(
-            '', // For filter icon.
-            '', // For activity icon.
             get_string('gradeitem', 'grades'),
             get_string('gradecategory', 'grades'),
             get_string('range', 'grades'),
@@ -196,8 +194,8 @@ class user extends tablelike implements selectable_items {
         $grade->label = $item->get_name();
 
         $line = array(
-            $OUTPUT->action_icon($this->format_link('grade', $item->id), new pix_icon('t/editstring', $iconstring)),
-            $this->format_icon($item) . $lockicon, $itemlabel, $this->category($item), (new range($item))
+            $OUTPUT->action_icon($this->format_link('grade', $item->id), new pix_icon('t/editstring', $iconstring)) .
+            $this->format_icon($item) . $lockicon . $itemlabel, $this->category($item), (new range($item))
         );
         return $this->format_definition($line, $grade);
     }

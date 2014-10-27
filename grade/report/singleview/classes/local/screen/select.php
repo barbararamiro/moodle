@@ -27,6 +27,7 @@ namespace gradereport_singleview\local\screen;
 use gradereport_singleview;
 use single_select;
 use moodle_url;
+use html_writer;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -83,7 +84,7 @@ class select extends screen {
     public function html() {
         global $OUTPUT;
 
-        $html = '';
+        $html = html_writer::start_tag('div');
 
         $types = gradereport_singleview::valid_screens();
 
@@ -117,6 +118,8 @@ class select extends screen {
         if (empty($html)) {
             $OUTPUT->notification(get_string('noscreens', 'gradereport_singleview'));
         }
+
+        $html .= html_writer::end_tag('div');
 
         return $html;
     }

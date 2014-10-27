@@ -153,8 +153,15 @@ if ($report->screen->supports_paging()) {
     echo $report->screen->pager();
 }
 
-if ($report->screen->display_group_selector()) {
-    echo $report->group_selector;
+if (!is_a($report->screen, 'gradereport_singleview\local\screen\select')) {
+    if ($report->screen->display_group_selector()) {
+        echo $report->group_selector;
+    }
+
+    $select = new \gradereport_singleview\local\screen\select($courseid, $itemid, $groupid);
+    echo $select->html();
+
+    echo $report->output();
 }
 
 if (!empty($warnings)) {
@@ -162,8 +169,6 @@ if (!empty($warnings)) {
         echo $OUTPUT->notification($warning);
     }
 }
-
-echo $report->output();
 
 if ($report->screen->supports_paging()) {
     echo $report->screen->pager();
@@ -175,6 +180,13 @@ if (!is_null($graderleftnav)) {
 if (!is_null($graderrightnav)) {
     echo $graderrightnav;
 }
+
+if ($report->screen->display_group_selector()) {
+    echo $report->group_selector;
+}
+
+$select = new \gradereport_singleview\local\screen\select($courseid, $itemid, $groupid);
+echo $select->html();
 
 $event = \gradereport_singleview\event\grade_report_viewed::create(
     array(
