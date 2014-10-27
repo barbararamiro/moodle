@@ -140,7 +140,7 @@ class user extends tablelike implements selectable_items {
         return array(
             '', // For filter icon.
             '', // For activity icon.
-            get_string('assessmentname', 'gradereport_singleview'),
+            get_string('gradeitem', 'grades'),
             get_string('gradecategory', 'grades'),
             get_string('range', 'grades'),
             get_string('grade', 'grades'),
