@@ -1,10 +1,23 @@
+.path-grade-report-singleview .quicknav:before,
+.path-grade-report-singleview .quicknav:after {
+  clear: both;
+  display: table;
+  content: "";
+}
 .path-grade-report-singleview .itemnav {
   display: inline-block;
-  font-size: 100%;
   padding: 10px 0;
 }
 .path-grade-report-singleview .nextitem {
   float: right;
+}
+.path-grade-report-singleview .itemuserselect {
+  display: inline-block;
+  float: right;
+  margin: 3px 0;
+}
+.path-grade-report-singleview .itemuserselect .singleselect select {
+  margin: 0 0 10px 5px;
 }
 .path-grade-report-singleview .generalbox {
   text-align: right;
@@ -13,8 +26,7 @@
 .path-grade-report-singleview .generalbox .singleselect {
   display: inline-block;
 }
-.path-grade-report-singleview .generalbox .singleselect select,
-.path-grade-report-singleview .generalbox .submit input {
+.path-grade-report-singleview .generalbox .singleselect select {
   margin: 0 0 10px 5px;
 }
 .path-grade-report-singleview .generaltable {
@@ -24,6 +36,32 @@
 .path-grade-report-singleview .generaltable .header {
   text-align: left;
   vertical-align: bottom;
+}
+.path-grade-report-singleview .generaltable .cell.c1 {
+  font-weight: normal;
+}
+.path-grade-report-singleview .generaltable .gradeitem {
+  padding-left: 30px;
+}
+.path-grade-report-singleview .generaltable .gradeitem .itemicon {
+  margin-left: -22px;
+}
+.path-grade-report-singleview .generaltable .user {
+  padding-left: 43px;
+}
+.path-grade-report-singleview .generaltable .user .userpicture {
+  margin-left: -35px;
+}
+.path-grade-report-singleview .generaltable .user a:nth-of-type(2) {
+  vertical-align: top;
+  display: inline-block;
+  margin-left: 8px;
+}
+.path-grade-report-singleview .generaltable .range {
+  white-space: nowrap;
+}
+.path-grade-report-singleview .generaltable input[type="text"] {
+  width: auto;
 }
 .path-grade-report-singleview .generaltable .inclusion_links {
   display: block;
