@@ -178,15 +178,14 @@ if ($report->screen->supports_paging()) {
     echo $report->screen->pager();
 }
 
-echo $quicknav;
+$select = new \gradereport_singleview\local\screen\select($courseid, $itemid, $groupid);
+echo $select->html();
 
 if ($report->screen->display_group_selector()) {
     echo $report->group_selector;
 }
 
-$select = new \gradereport_singleview\local\screen\select($courseid, $itemid, $groupid);
-echo $select->html();
-
+echo $quicknav;
 $event = \gradereport_singleview\event\grade_report_viewed::create(
     array(
         'context' => $context,

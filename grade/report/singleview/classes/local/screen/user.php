@@ -138,6 +138,7 @@ class user extends tablelike implements selectable_items {
      */
     public function original_headers() {
         return array(
+            '',
             get_string('gradeitem', 'grades'),
             get_string('gradecategory', 'grades'),
             get_string('range', 'grades'),
@@ -190,25 +191,14 @@ class user extends tablelike implements selectable_items {
         $gradetreeitem['object'] = $item;
         $gradetreeitem['userid'] = $this->item->id;
 
-        $itemlabel = $this->structure->get_element_header($gradetreeitem, true, false);
+        $itemlabel = $this->structure->get_element_header($gradetreeitem, true, true);
         $grade->label = $item->get_name();
 
         $line = array(
-            $OUTPUT->action_icon($this->format_link('grade', $item->id), new pix_icon('t/editstring', $iconstring)) .
-            $this->format_icon($item) . $lockicon . $itemlabel, $this->category($item), (new range($item))
+            $OUTPUT->action_icon($this->format_link('grade', $item->id), new pix_icon('t/editstring', $iconstring)),
+            $lockicon . $itemlabel, $this->category($item), (new range($item))
         );
         return $this->format_definition($line, $grade);
-    }
-
-    /**
-     * Helper to get the icon for an item.
-     *
-     * @param grade_item $item
-     * @return string
-     */
-    private function format_icon($item) {
-        $element = array('type' => 'item', 'object' => $item);
-        return $this->structure->get_element_icon($element);
     }
 
     /**
