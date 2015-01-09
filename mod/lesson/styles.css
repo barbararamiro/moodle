@@ -95,3 +95,95 @@
 .path-mod-lesson .essaysent {
     background-color: #cfefcf;
 }
+
+.mod_lesson_main {
+    position: relative;
+    overflow: scroll;
+    border: 1px solid #aaa;
+    height: 1000px;
+}
+
+.mod_lesson_main .mod_lesson_page_element {
+
+    /*position: absolute;  specify abs position! */
+    /*position: absolute;*/
+    border: 1px solid #000;
+    border-radius: 6px 6px 2px 2px;
+    margin: 0.5em 0;
+    width: 240px;
+    height: 100px;
+}
+/*.mod_lesson_main .mod_lesson_page_element > * {
+    padding: 0.25em 0.5em;
+}*/
+.mod_lesson_main .mod_lesson_page_element header {
+    border-bottom: 1px solid #000;
+    font-weight: bold;
+    text-align: center;
+}
+.mod_lesson_main .mod_lesson_page_element_body {
+    font-size: 0.8em;
+}
+
+.path-mod-lesson .lessonline {
+    z-index: -1;
+    padding: 0;
+    margin: 0;
+    height: 1px;
+    background-color: black;
+    line-height: 1px;
+    position: absolute;
+    
+    user-select: none;
+}
+
+.mod_lesson_menu {
+    border: 1px solid #000;
+    width: 200px;
+    height: 130px;
+    text-align: center;
+    user-select: none;
+}
+
+.mod_lesson_menu_item {
+    border: 1px solid #000;
+    width: 120px;
+    height: 25px;
+    text-align: center;
+    user-select: none;
+}
+
+.mod_lesson_page_editor {
+    border: 1px solid #000;
+    background-color: #fff;
+    width: 1000px;
+    height: 500px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: block;
+    padding: 10px;
+
+}
+
+.mod_lesson_page_object_menu {
+    position: relative;
+    top: 35px;
+    left: 5px;
+}
+
+.mod_lesson_page_object_menu_thing {
+    position: relative;
+    top: 17px;
+    left: 20px;
+    width: 80px;
+    border-style: solid;
+    border-width: 1px;
+    background-color: white;
+    padding: 5px;
+
+}
+
+.mod_lesson_page_object_menu_thing ul{
+    list-style-type: none;
+}

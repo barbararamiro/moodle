@@ -57,6 +57,9 @@ if (!$lesson->has_pages()) {
         case 'collapsed':
             echo $lessonoutput->display_edit_collapsed($lesson, $lesson->firstpageid);
             break;
+        case 'javascript':
+            echo $lessonoutput->display_edit_js($lesson, $lesson->firstpageid);
+            break;
         case 'single':
             $pageid =  required_param('pageid', PARAM_INT);
             $PAGE->url->param('pageid', $pageid);

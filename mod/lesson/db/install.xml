@@ -72,6 +72,8 @@
         <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="contents" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="contentsformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="positionx" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="X position on screen in JavaScript mode."/>
+        <FIELD NAME="positiony" TYPE="int" LENGTH="11" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Y position on screen in JavaScript mode."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

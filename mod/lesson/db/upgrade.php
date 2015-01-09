@@ -227,8 +227,6 @@ function xmldb_lesson_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-
-        // Lesson savepoint reached.
         upgrade_mod_savepoint(true, 2015031500, 'lesson');
     }
 
@@ -298,6 +296,28 @@ function xmldb_lesson_upgrade($oldversion) {
 
     // Moodle v2.9.0 release upgrade line.
     // Put any upgrade step following this.
+    if ($oldversion < 2015051101) {
+        // Define field positionx to be added to lesson_pages.
+        $table = new xmldb_table('lesson_pages');
+        $field = new xmldb_field('positionx', XMLDB_TYPE_INTEGER, '11', null, null, null, '0', 'contentsformat');
+
+        // Conditionally launch add field positionx.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field positiony to be added to lesson_pages.
+        $table = new xmldb_table('lesson_pages');
+        $field = new xmldb_field('positiony', XMLDB_TYPE_INTEGER, '11', null, null, null, '0', 'positionx');
+
+        // Conditionally launch add field positiony.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lesson savepoint reached.
+        upgrade_mod_savepoint(true, 2015051101, 'lesson');
+    }    
 
     return true;
 }
