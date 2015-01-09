@@ -1,0 +1,10 @@
+{
+    "name": "moodle-mod_lesson-pagemmove",
+    "builds": {
+        "moodle-mod_lesson-pagemmove": {
+            "jsfiles": [
+                "pagemmove.js"
+            ]
+        }
+    }
+}

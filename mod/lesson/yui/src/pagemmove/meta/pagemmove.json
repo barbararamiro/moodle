@@ -1,0 +1,18 @@
+{
+  "moodle-mod_lesson-pagemmove": {
+    "requires": [
+        "base",
+        "event",
+        "node",
+        "io",
+        "graphics",
+        "json",
+        "event-move",
+        "event-resize",
+        "dd-delegate",
+        "dd-plugin",
+        "dd-constrain",
+        "dd-drop-plugin"
+    ]
+  }
+}
