@@ -99,7 +99,7 @@
 .mod_lesson_main {
     position: relative;
     overflow: scroll;
-    border: 1px solid #aaa;
+    border: 1px solid #bbb;
     height: 1000px;
 }
 
@@ -107,9 +107,11 @@
 
     /*position: absolute;  specify abs position! */
     /*position: absolute;*/
-    border: 1px solid #000;
-    border-radius: 6px 6px 2px 2px;
-    margin: 0.5em 0;
+    background-color: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset;
+    margin: 1em 0;
     width: 240px;
     height: 100px;
 }
@@ -117,12 +119,15 @@
     padding: 0.25em 0.5em;
 }*/
 .mod_lesson_main .mod_lesson_page_element header {
-    border-bottom: 1px solid #000;
-    font-weight: bold;
+    color: #666;
     text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid #e3e3e3;
+    padding: 5px 10px;
 }
 .mod_lesson_main .mod_lesson_page_element_body {
-    font-size: 0.8em;
+    padding: 5px 10px;
 }
 
 .path-mod-lesson .lessonline {
@@ -133,24 +138,29 @@
     background-color: black;
     line-height: 1px;
     position: absolute;
-    
     user-select: none;
 }
 
 .mod_lesson_menu {
-    border: 1px solid #000;
-    width: 200px;
-    height: 130px;
-    text-align: center;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #bbb;
+    min-height: 50px;
+    padding: 0 20px;
     user-select: none;
 }
 
 .mod_lesson_menu_item {
-    border: 1px solid #000;
-    width: 120px;
-    height: 25px;
-    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 10px 4px;
     user-select: none;
+    padding: 5px 7px;
+}
+
+.mod_lesson_menu_item:first-child {
+    margin-left: 20px;
 }
 
 .mod_lesson_page_editor {
@@ -167,23 +177,45 @@
 }
 
 .mod_lesson_page_object_menu {
-    position: relative;
-    top: 35px;
-    left: 5px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
-.mod_lesson_page_object_menu_thing {
-    position: relative;
-    top: 17px;
-    left: 20px;
-    width: 80px;
-    border-style: solid;
-    border-width: 1px;
-    background-color: white;
-    padding: 5px;
-
-}
-
-.mod_lesson_page_object_menu_thing ul{
+.mod_lesson_page_object_menu_thing ul {
     list-style-type: none;
+    margin: 0;
+    padding: 5px 0;
+
+    position: absolute;
+    top: 30px;
+    right: 0;
+    width: 80px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.mod_lesson_page_object_menu_thing ul::before {
+    content: "";
+    display: inline-block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: -7px;
+    right: 9px;
+}
+
+.mod_lesson_page_object_menu_thing ul li a {
+    color: #333;
+    display: block;
+    padding: 3px 8px;
+}
+
+.mod_lesson_page_object_menu_thing ul li a:hover {
+    color: #fff;
+    background-color: #0070A8;
+    text-decoration: none;
 }
