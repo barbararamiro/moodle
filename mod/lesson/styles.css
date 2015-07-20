@@ -98,9 +98,13 @@
 
 .mod_lesson_main {
     position: relative;
-    overflow: scroll;
     border: 1px solid #bbb;
-    height: 1000px;
+}
+
+.mod_lesson_pages {
+    height: 500px;
+    overflow: scroll;
+    resize: vertical;
 }
 
 .mod_lesson_main .mod_lesson_page_element {
@@ -126,6 +130,7 @@
     border-bottom: 1px solid #e3e3e3;
     padding: 5px 10px;
 }
+
 .mod_lesson_main .mod_lesson_page_element_body {
     padding: 5px 10px;
 }
@@ -164,16 +169,32 @@
 }
 
 .mod_lesson_page_editor {
-    border: 1px solid #000;
-    background-color: #fff;
-    width: 1000px;
-    height: 500px;
+    width: 826px;
     position: absolute;
-    top: 10px;
-    left: 10px;
-    display: block;
-    padding: 10px;
+    top: 70px;
+    left: 15px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px 0px #666;
+    box-sizing: border-box;
+}
 
+.mod_lesson_page_editor div input,
+.mod_lesson_page_editor div textarea,
+.mod_lesson_page_editor div select {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+.mod_lesson_page_editor textarea {
+    resize: vertical;
+}
+
+.mod_lesson_page_editor div:last-child {
+    text-align: center;
 }
 
 .mod_lesson_page_object_menu {
@@ -198,14 +219,25 @@
 }
 
 .mod_lesson_page_object_menu_thing ul::before {
-    content: "";
-    display: inline-block;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 7px solid rgba(0, 0, 0, 0.2);
     position: absolute;
     top: -7px;
     right: 9px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid rgba(0, 0, 0, 0.2);
+    border-left: 7px solid transparent;
+    content: "";
+}
+
+.mod_lesson_page_object_menu_thing ul::after {
+    position: absolute;
+    top: -6px;
+    right: 10px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #FFF;
+    border-left: 6px solid transparent;
+    content: "";
 }
 
 .mod_lesson_page_object_menu_thing ul li a {
