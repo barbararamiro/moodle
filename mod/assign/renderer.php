@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
+use \mod_assign\output\grading_app;
+
 /**
  * A custom renderer class that extends the plugin_renderer_base and is used by the assign module.
  *
@@ -333,14 +335,19 @@ class mod_assign_renderer extends plugin_renderer_base {
         $o .= $this->output->box_end();
 
         // Link to the grading page.
-        $o .= $this->output->container_start('submissionlinks');
+        $o .= '<center>';
+        $o .= $this->output->container_start('submissionlinks btn-group');
         $urlparams = array('id' => $summary->coursemoduleid, 'action'=>'grading');
         $url = new moodle_url('/mod/assign/view.php', $urlparams);
-        $o .= $this->output->action_link($url, get_string('viewgrading', 'assign'));
+        $o .= '<a href="' . $url . '" class="btn">' . get_string('viewgrading', 'mod_assign') . '</a>';
+        $urlparams = array('id' => $summary->coursemoduleid, 'action'=>'grader');
+        $url = new moodle_url('/mod/assign/view.php', $urlparams);
+        $o .= '<a href="' . $url . '" class="btn btn-primary">' . get_string('grade') . '</a>';
         $o .= $this->output->container_end();
 
         // Close the container and insert a spacer.
         $o .= $this->output->container_end();
+        $o .= '</center>';
 
         return $o;
     }
@@ -1248,5 +1255,14 @@ class mod_assign_renderer extends plugin_renderer_base {
         return $o;
     }
 
+    /**
+     * Defer to template..
+     *
+     * @param grading_app - All the data to render the grading app.
+     */
+    public function render_grading_app(grading_app $app) {
+        $context = $app->export_for_template($this);
+        return $this->render_from_template('mod_assign/grading_app', $context);
+    }
 }
 

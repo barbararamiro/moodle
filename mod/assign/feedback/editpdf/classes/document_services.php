@@ -249,6 +249,7 @@ class document_services {
         if (!$files) {
             // This was a blank pdf.
             $blankpdf = new pdf();
+            $blankpdf->AddPage('P');
             $content = $blankpdf->Output(self::COMBINED_PDF_FILENAME, 'S');
             $file = $fs->create_file_from_string($record, $content);
             $blankpdf->Close(); // No real need to close this pdf, because it has been outputted, but for clarity.

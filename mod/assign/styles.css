@@ -308,3 +308,144 @@
 .path-mod-assign .editsubmissionform label[for="id_submissionstatement"] {
     display: inline-block;
 }
+
+.path-mod-assign.layout-option-nonavbar {
+    padding-top: 0px;
+}
+
+.path-mod-assign [data-region="user-selector"] select {
+    margin-bottom: 0px;
+}
+.path-mod-assign [data-region="configure-filters"] {
+    display: none;
+    text-align: left;
+    position: absolute;
+    margin-top: 2.5em;
+    margin-left: -10em;
+    width: 10em;
+    z-index: 1;
+}
+
+.path-mod-assign.dir-rtl [data-region="configure-filters"] {
+    text-align: right;
+    margin-left: 0em;
+    margin-right: -10em;
+}
+
+.path-mod-assign [data-region="user-filters"] {
+    font-size: small;
+}
+
+.path-mod-assign [data-region="user-selector"] .form-autocomplete-selection {
+    display: none;
+}
+.path-mod-assign [data-region="user-selector"] .alignment {
+    float: right;
+    width: 250px;
+}
+.dir-rtl.path-mod-assign [data-region="user-selector"] .alignment {
+    float: left;
+}
+
+.path-mod-assign [data-region="user-info"] a {
+    text-decoration: none;
+}
+.path-mod-assign [data-region="user-info"] {
+    height: 60px;
+}
+
+.path-mod-assign [data-region="grading-navigation-panel"] {
+    position: absolute; margin: 0; top: 0; left: 0; width: 100%; height: 6em;
+    left: 0;
+    width: 100%;
+    top: 0;
+    position-fixed;
+    border-bottom: 1px solid #ddd;
+}
+.path-mod-assign [data-region="grading-navigation"] {
+    padding: 1em;
+}
+.path-mod-assign [data-region="grading-actions-form"] label {
+    display: inline-block;
+}
+
+.path-mod-assign.pagelayout-popup {
+    overflow: hidden;
+}
+
+.path-mod-assign [data-region="review-panel"] {
+    position: absolute; top: 7em; left: 0; width: 57%; bottom: 7em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.path-mod-assign [data-region="grade-panel"].fullwidth {
+    position: absolute; top: 7em; left: 0; right: 0; width: 99%; overflow: auto; bottom: 7em;
+}
+.path-mod-assign [data-region="grade-panel"].fullwidth [data-region="grade"] {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.path-mod-assign [data-region="grade-panel"] {
+    position: absolute; top: 7em; left: 60%; width: 35%; overflow: auto; bottom: 7em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.path-mod-assign [data-region="grade-actions-panel"] {
+    border-top: 1px solid #ddd;
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 6em;
+}
+.path-mod-assign [data-region="grade-actions"] {
+    padding: 1em;
+    text-align: center;
+}
+.path-mod-assign [data-region="overlay"] {
+    display: none;
+    z-index: 1;
+    position: absolute;
+    top: 0em;
+    left: 0;
+    width: 100%;
+    overflow: auto;
+    bottom: 0em;
+    background-color: #ddd;
+    opacity: 0.4;
+    padding-top: 4em;
+    text-align: center;
+}
+
+@media (max-width: 767px) {
+    .path-mod-assign [data-region="user-info"] {
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    .path-mod-assign [data-region="grading-navigation-panel"],
+    .path-mod-assign [data-region="review-panel"],
+    .path-mod-assign [data-region="grade-panel"],
+    .path-mod-assign [data-region="grade-actions-panel"] {
+        position: inherit;
+        width: 100%;
+        top: 0;
+        left: 0;
+        overflow: none;
+        height: auto;
+        margin-bottom: 1em;
+    }
+    .path-mod-assign.pagelayout-popup {
+        overflow: inherit;
+    }
+
+    .path-mod-assign [data-region="assignment-info"] {
+        margin-bottom: 1em;
+    }
+
+    .dir-rtl.path-mod-assign [data-region="user-info"] {
+        text-align: center;
+    }
+    .path-mod-assign [data-region="user-selector"] .alignment {
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
