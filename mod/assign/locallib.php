@@ -205,7 +205,7 @@ class assign {
     public function register_return_link($action, $params) {
         global $PAGE;
         $params['action'] = $action;
-        $currenturl = $PAGE->url;
+        $currenturl = new moodle_url('/mod/assign/view.php');
 
         $currenturl->params($params);
         $PAGE->set_url($currenturl);
@@ -1444,6 +1444,7 @@ class assign {
                          LEFT JOIN {assign_grades} g
                                 ON u.id = g.userid
                                AND g.assignment = :assignmentid2
+                               AND g.attemptnumber = s.attemptnumber
                          WHERE u.id ' . $insql;
 
         $records = $DB->get_records_sql($sql, $params);
@@ -2908,7 +2909,7 @@ class assign {
         if ($this->output) {
             return $this->output;
         }
-        $this->output = $PAGE->get_renderer('mod_assign');
+        $this->output = $PAGE->get_renderer('mod_assign', null, RENDERER_TARGET_GENERAL);
         return $this->output;
     }
 
@@ -3126,7 +3127,7 @@ class assign {
      * @return string
      */
     protected function view_single_grading_panel($mform, $args) {
-        global $DB, $CFG, $SESSION;
+        global $DB, $CFG, $SESSION, $PAGE;
 
         $o = '';
         $instance = $this->get_instance();
@@ -3241,7 +3242,7 @@ class assign {
         // Now show the grading form.
         if (!$mform) {
             $pagination = array('rownum'=>$rownum,
-                                'useridlistid'=>$useridlistid,
+                                'useridlistid'=>0,
                                 'last'=>$last,
                                 'userid'=>$userid,
                                 'attemptnumber'=>$attemptnumber,
@@ -3277,7 +3278,7 @@ class assign {
                                                   $this->get_return_action(),
                                                   $this->get_return_params(),
                                                   true,
-                                                  $useridlistid,
+                                                  0,
                                                   $rownum);
 
             $o .= $this->get_renderer()->render($history);
@@ -6422,11 +6423,11 @@ class assign {
         global $USER, $CFG, $SESSION;
         $settings = $this->get_instance();
 
-        $rownum = $params['rownum'];
-        $last = $params['last'];
-        $useridlistid = $params['useridlistid'];
-        $userid = $params['userid'];
-        $attemptnumber = $params['attemptnumber'];
+        $rownum = isset($params['rownum']) ? $params['rownum'] : 0;
+        $last = isset($params['last']) ? $params['last'] : true;
+        $useridlistid = isset($params['useridlistid']) ? $params['useridlistid'] : 0;
+        $userid = isset($params['userid']) ? $params['userid'] : 0;
+        $attemptnumber = isset($params['attemptnumber']) ? $params['attemptnumber'] : 0;
         $gradingpanel = !empty($params['gradingpanel']);
         if (!$userid) {
             $useridlistkey = $this->get_useridlist_key($useridlistid);
@@ -6632,6 +6633,7 @@ class assign {
             $mform->addElement('selectyesno', 'sendstudentnotifications', get_string('sendstudentnotifications', 'assign'));
         } else {
             $mform->addElement('hidden', 'sendstudentnotifications', get_string('sendstudentnotifications', 'assign'));
+            $mform->setType('sendstudentnotifications', PARAM_BOOL);
         }
         // Get assignment visibility information for student.
         $modinfo = get_fast_modinfo($settings->course, $userid);
@@ -7252,7 +7254,7 @@ class assign {
         } else {
             $submission = $this->get_user_submission($userid, false, $data->attemptnumber);
         }
-        if ($instance->teamsubmission && $data->applytoall) {
+        if ($instance->teamsubmission && !empty($data->applytoall)) {
             $groupid = 0;
             if ($this->get_submission_group($userid)) {
                 $group = $this->get_submission_group($userid);

@@ -38,7 +38,7 @@ Feature: In an assignment, teachers grade multiple students on one page
     And I am on site homepage
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Grade Student 1" "link" in the "Student 1" "table_row"
     And I press "Save changes"
     And I press "Continue"
@@ -109,7 +109,7 @@ Feature: In an assignment, teachers grade multiple students on one page
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Grade Student 1" "link" in the "Student 1" "table_row"
     And I set the following fields to these values:
       | Grade out of 100 | 50.0 |
@@ -144,7 +144,7 @@ Feature: In an assignment, teachers grade multiple students on one page
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Hide User picture" "link"
     And I click on "Hide Full name" "link"
     And I click on "Hide Email address" "link"

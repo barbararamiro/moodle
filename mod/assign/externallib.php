@@ -2367,7 +2367,7 @@ class mod_assign_external extends external_api {
                 ), 'Courses where the user is enrolled - limited by which courses the user is able to see', VALUE_OPTIONAL),
                 'submitted' => new external_value(PARAM_BOOL, 'have they submitted their assignment'),
                 'requiregrading' => new external_value(PARAM_BOOL, 'is their submission waiting for grading'),
-                'groupid' => new external_value(PARAM_BOOL, 'for group assignments this is the group id', VALUE_OPTIONAL),
+                'groupid' => new external_value(PARAM_INT, 'for group assignments this is the group id', VALUE_OPTIONAL),
                 'groupname' => new external_value(PARAM_NOTAGS, 'for group assignments this is the group name', VALUE_OPTIONAL),
             ))
         );

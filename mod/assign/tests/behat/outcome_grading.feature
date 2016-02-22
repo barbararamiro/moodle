@@ -62,7 +62,7 @@ Feature: Outcome grading
     When I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "img[alt='Grade Student 0']" "css_element"
     And I set the following fields to these values:
       | Outcome Test: | Excellent |
@@ -109,7 +109,7 @@ Feature: Outcome grading
     When I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "img[alt='Grade Student 0']" "css_element"
     And I set the following fields to these values:
       | Outcome Test: | Excellent |

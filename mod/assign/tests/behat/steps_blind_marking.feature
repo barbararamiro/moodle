@@ -44,7 +44,7 @@ Feature: Assignments correctly add feedback to the grade report when workflow an
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I should see "Not marked" in the "I'm the student's first submission" "table_row"
     And I click on "Grade Participant " "link" in the "I'm the student's first submission" "table_row"
     And I set the field "Grade out of 100" to "50"

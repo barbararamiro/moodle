@@ -54,7 +54,7 @@ Feature: In an assignment, students can comment in their submissions
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Grade Student 1" "link" in the "Student 1" "table_row"
     When I set the following fields to these values:
       | Grade out of 100 | 50 |
@@ -71,7 +71,7 @@ Feature: In an assignment, students can comment in their submissions
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Grade Student 1" "link" in the "Student 1" "table_row"
     And I set the following fields to these values:
       | Grade out of 100 | 0 |

@@ -1429,6 +1429,12 @@ function assign_pluginfile($course,
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
 
+/**
+ * Serve the grading panel as a fragment.
+ *
+ * @param array $args List of named arguments for the fragment loader.
+ * @return string
+ */
 function mod_assign_output_fragment_gradingpanel($args) {
     global $CFG;
 

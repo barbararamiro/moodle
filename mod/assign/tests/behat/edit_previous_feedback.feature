@@ -40,13 +40,15 @@ Feature: In an assignment, teachers can edit feedback for a students previous su
     And I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
-    And I click on "Grade Student 2" "link" in the "Student 2" "table_row"
+    And I follow "View all submissions"
+    And I click on "Grade" "link" in the "Student 2" "table_row"
     And I set the following fields to these values:
       | Grade | 49 |
       | Feedback comments | I'm the teacher first feedback |
       | Allow another attempt | Yes |
     And I press "Save changes"
+    And I press "Ok"
+    And I click on "Edit settings" "link"
     And I log out
     And I log in as "student2"
     And I follow "Course 1"
@@ -56,13 +58,15 @@ Feature: In an assignment, teachers can edit feedback for a students previous su
     When I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
-    And I click on "Grade Student 2" "link" in the "Student 2" "table_row"
+    And I follow "View all submissions"
+    And I click on "Grade" "link" in the "Student 2" "table_row"
     And I click on ".mod-assign-history-link" "css_element"
     And I set the following fields to these values:
       | Grade | 50 |
       | Feedback comments | I'm the teacher second feedback |
     And I press "Save changes"
+    And I press "Ok"
+    And I click on "Edit settings" "link"
     And I log out
     Then I log in as "student2"
     And I follow "Course 1"

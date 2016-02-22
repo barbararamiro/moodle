@@ -32,7 +32,7 @@ Feature: In an assignment, teachers can filter displayed submissions by assigned
       | Use marking workflow | Yes |
       | Use marking allocation | Yes |
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I click on "Grade Student 1" "link" in the "Student 1" "table_row"
     And I set the field "allocatedmarker" to "Marker 1"
     And I click on "Save changes" "button"
@@ -40,7 +40,7 @@ Feature: In an assignment, teachers can filter displayed submissions by assigned
     When I log in as "teacher1"
     And I follow "Course 1"
     And I follow "Test assignment name"
-    And I follow "View/grade all submissions"
+    And I follow "View all submissions"
     And I set the field "markerfilter" to "Marker 1"
     Then I should see "Student 1"
     And I should not see "Student 2"

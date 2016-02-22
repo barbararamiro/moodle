@@ -200,7 +200,7 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
                 if (userid > 0) {
                     this._region.show();
                     // Reload the grading form "fragment" for this user.
-                    var params = { userid: userid, attemptnumber: 0, jsonformdata: JSON.stringify(submissiondata) };
+                    var params = { userid: userid, attemptnumber: -1, jsonformdata: JSON.stringify(submissiondata) };
                     fragment.loadFragment('mod_assign', 'gradingpanel', contextid, params).done(function(html, js) {
                         this._niceReplaceNodeContents(this._region, html, js)
                         .done(function() {

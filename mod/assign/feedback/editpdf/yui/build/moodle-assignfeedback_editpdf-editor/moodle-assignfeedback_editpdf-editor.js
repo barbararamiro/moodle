@@ -4302,7 +4302,8 @@ M.assignfeedback_editpdf.editor = M.assignfeedback_editpdf.editor || {};
  * @param {Object} params
  */
 M.assignfeedback_editpdf.editor.init = M.assignfeedback_editpdf.editor.init || function(params) {
-    return new EDITOR(params);
+    M.assignfeedback_editpdf.instance =  new EDITOR(params);
+    return M.assignfeedback_editpdf.instance;
 };
 
 

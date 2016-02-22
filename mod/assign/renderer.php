@@ -804,7 +804,7 @@ class mod_assign_renderer extends plugin_renderer_base {
         }
 
         $containerid = 'attempthistory' . uniqid();
-        $o .= $this->heading(get_string('attempthistory', 'assign'), 3);
+        $o .= $this->output->heading(get_string('attempthistory', 'assign'), 3);
         $o .= $this->box_start('attempthistory', $containerid);
 
         foreach ($history->submissions as $i => $submission) {
