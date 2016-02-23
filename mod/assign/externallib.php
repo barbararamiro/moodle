@@ -1480,19 +1480,19 @@ class mod_assign_external extends external_api {
 
         $data = array();
         parse_str($serialiseddata, $data);
-        $data = (object) $data;
 
         $warnings = array();
 
         $options = array('userid'=>$params['userid'],
-                         'attemptnumber'=>$data->attemptnumber,
+                         'attemptnumber'=>$data['attemptnumber'],
                          'rownum'=>0,
                          'gradingpanel' => true);
-        $formparams = array($assignment, $data, $options);
 
-        $mform = new mod_assign_grade_form(null,
-                                           $formparams);
+        $customdata = (object) $data;
+        $formparams = array($assignment, $customdata, $options);
 
+        // Data is injected into the form by the last param for the constructor.
+        $mform = new mod_assign_grade_form(null, $formparams, 'post', '', null, true, $data);
         $validateddata = $mform->get_data();
 
         if ($validateddata) {
