@@ -1,0 +1,102 @@
+Damyons-MacBook-Pro:moodle damyon$ vendor/bin/behat --config /Users/damyon/Documents/Moodle/integration_master/moodledata_behat/behat/behat.yml --tags=@mod_assign
+Moodle 3.1dev (Build: 20160204), pgsql, 78fe111d607681650f60440368c78b3de33f490f
+Server OS "Darwin", Browser: "firefox"
+Behat specific fixes have been applied. See http://docs.moodle.org/dev/Acceptance_testing#Browser_specific_fixes
+Started at 24-02-2016, 21:13
+...................................................................... 70
+...................................................................... 140
+...................................................................... 210
+.................................F.................................... 280
+...................................................................... 350
+...................................................................... 420
+...................................................................... 490
+....F------------..................................................... 560
+F----------------.........................................F----------- 630
+--------------------------------------................................ 700
+......F---------------................................................ 770
+...................................................................... 840
+...................................................................... 910
+................................................................F----- 980
+.............................................................F-------- 1050
+--------.............................................................. 1120
+...................................................................... 1190
+..............................................F----................... 1260
+......................................F------------------------------- 1330
+----------------------------------.................................... 1400
+...................................................................... 1470
+............F-------------------------................................ 1540
+...F-------------------------.......................................F- 1610
+----...........F--------.......^[[D....................................... 1680
+............^[[B................................................
+
+(::) failed steps (::)
+
+01. "I'm the student first submission" text was not found in the page
+    In step `And I should see "I'm the student first submission"'.                           # behat_general::assert_page_contains_text()
+    From scenario `Submit a text online and edit the submission'.                            # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/allow_another_attempt.feature:8
+    Of feature `In an assignment, students start a new attempt based on their previous one'. # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/allow_another_attempt.feature
+
+02. Css matching locator ".mod-assign-history-link" not found.
+    In step `And I click on ".mod-assign-history-link" "css_element"'.                                    # behat_general::i_click_on()
+    From scenario `Edit feedback for a students previous attempt.'.                                       # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/edit_previous_feedback.feature:8
+    Of feature `In an assignment, teachers can edit feedback for a students previous submission attempt'. # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/edit_previous_feedback.feature
+
+03. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                     # behat_general::i_click_on_in_the()
+    From scenario `Allocate markers to submissions and filter by marker'.                                 # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/filter_by_marker.feature:8
+    Of feature `In an assignment, teachers can filter displayed submissions by assigned marker'.          # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/filter_by_marker.feature
+
+04. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                     # behat_general::i_click_on_in_the()
+    From scenario `View the grading status for an assignment with marking workflow enabled'.              # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/grading_status.feature:21
+    Of feature `View the grading status of an assignment'.                                                # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/grading_status.feature
+
+05. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                     # behat_general::i_click_on_in_the()
+    From scenario `View the grading status for an assignment with marking workflow disabled'.             # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/grading_status.feature:112
+    Of feature `View the grading status of an assignment'.                                                # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/grading_status.feature
+
+06. Css matching locator "img[alt='Grade Student 0']" not found.
+    In step `And I click on "img[alt='Grade Student 0']" "css_element"'.                                  # behat_general::i_click_on()
+    From scenario `Giving an outcome to a student'.                                                       # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/outcome_grading.feature:44
+    Of feature `Outcome grading'.                                                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/outcome_grading.feature
+
+07. Css matching locator "img[alt='Grade Student 0']" not found.
+    In step `And I click on "img[alt='Grade Student 0']" "css_element"'.                                  # behat_general::i_click_on()
+    From scenario `Giving an outcome to a group submission'.                                              # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/outcome_grading.feature:74
+    Of feature `Outcome grading'.                                                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/outcome_grading.feature
+
+08. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                     # behat_general::i_click_on_in_the()
+    From scenario `Saving but not grading a grade should
+not indicate the grade is graded.'.              # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/quickgrading.feature:7
+    Of feature `In an assignment, teachers grade multiple students on one page'.                          # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/quickgrading.feature
+
+09. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                     # behat_general::i_click_on_in_the()
+    From scenario `Grade multiple students on one page'.                                                  # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/quickgrading.feature:49
+    Of feature `In an assignment, teachers grade multiple students on one page'.                          # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/quickgrading.feature
+
+10. Link matching locator "Grade Participant " in the "I'm the student's first submission" "table_row"" not found.
+    In step `And I click on "Grade Participant " "link" in the "I'm the student's first submission" "table_row"'.     # behat_general::i_click_on_in_the()
+    From scenario background.                                                                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/steps_blind_marking.feature:8
+    Of feature `Assignments correctly add feedback to the grade report when workflow and blind marking are enabled.'. # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/steps_blind_marking.feature
+
+11. Link matching locator "Grade Participant " in the "I'm the student's first submission" "table_row"" not found.
+    In step `And I click on "Grade Participant " "link" in the "I'm the student's first submission" "table_row"'.     # behat_general::i_click_on_in_the()
+    From scenario background.                                                                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/steps_blind_marking.feature:8
+    Of feature `Assignments correctly add feedback to the grade report when workflow and blind marking are enabled.'. # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/steps_blind_marking.feature
+
+12. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                                 # behat_general::i_click_on_in_the()
+    From scenario `Teacher can comment on an offline assignment'.                                                     # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/submission_comments.feature:50
+    Of feature `In an assignment, students can comment in their submissions'.                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/submission_comments.feature
+
+13. Link matching locator "Grade Student 1" in the "Student 1" "table_row"" not found.
+    In step `And I click on "Grade Student 1" "link" in the "Student 1" "table_row"'.                                 # behat_general::i_click_on_in_the()
+    From scenario `Teacher can comment on assignments with a zero grade'.                                             # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/submission_comments.feature:67
+    Of feature `In an assignment, students can comment in their submissions'.                                         # /Users/damyon/Documents/Moodle/integration_master/moodle/mod/assign/tests/behat/submission_comments.feature
+
+34 scenarios (21 passed, 13 failed)
+1740 steps (1482 passed, 245 skipped, 13 failed)
+133m59.987s
