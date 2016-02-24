@@ -48,6 +48,7 @@ Feature: In an assignment, teachers can edit a students submission inline
     And I upload "lib/tests/fixtures/empty.txt" file to "Feedback files" filemanager
     And I press "Save changes"
     And I press "Ok"
+    And I wait until the page is ready
     And I click on "Edit settings" "link"
     And I follow "Test assignment name"
     And I follow "View all submissions"

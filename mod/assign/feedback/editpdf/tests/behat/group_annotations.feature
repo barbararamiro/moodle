@@ -59,6 +59,7 @@ Feature: In a group assignment, teacher can annotate PDF files for all users
     And I press "Save changes"
     And I should see "The changes to the grade and feedback were saved"
     And I press "Ok"
+    And I wait until the page is ready
     And I click on "Edit settings" "link"
     And I log out
     And I log in as "student1"
