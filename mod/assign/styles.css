@@ -438,6 +438,9 @@
         margin-bottom: 1em;
     }
 
+    .path-mod-assign [data-region="grade-panel"] [data-region="popout-button"] {
+        display: none;
+    }
     .path-mod-assign [data-region="grading-navigation-panel"],
     .path-mod-assign [data-region="review-panel"],
     .path-mod-assign [data-region="grade-panel"],
