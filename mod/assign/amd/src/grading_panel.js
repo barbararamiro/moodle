@@ -206,6 +206,38 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
     };
 
     /**
+     * Add popout buttons
+     *
+     * @private
+     * @method _addPopoutButtons
+     * @param {JQuery} region The region to add popout buttons to.
+     */
+    GradingPanel.prototype._addPopoutButtons = function(selector) {
+        var region = $(selector);
+
+        templates.render('mod_assign/popout_button', {}).done(function(html) {
+            region.find('.fitem_ffilemanager .fitemtitle').append(html);
+            region.find('.fitem_feditor .fitemtitle').append(html);
+            region.find('.fitem_f .fitemtitle').append(html);
+
+            region.on('click', '[data-region="popout-button"]', this._togglePopout.bind(this));
+        }.bind(this)).fail(notification.exception);
+    };
+
+    /**
+     * Make a div "popout" or "popback".
+     *
+     * @private
+     * @method _togglePopout
+     * @param {Event} event
+     */
+    GradingPanel.prototype._togglePopout = function(event) {
+        event.preventDefault();
+
+        $(event.target).closest('.fitem').toggleClass('popout');
+    };
+
+    /**
      * Get the user context - re-render the template in the page.
      *
      * @private
@@ -242,6 +274,7 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
                         .done(function() {
                             checker.saveFormState('[data-region="grade-panel"] .gradeform');
                             $('[data-region="attempt-chooser"]').on('click', this._chooseAttempt.bind(this));
+                            this._addPopoutButtons('[data-region="grade-panel"] .gradeform');
                             $(document).trigger('finish-loading-user');
                         }.bind(this))
                         .fail(notification.exception);

@@ -391,6 +391,17 @@
     padding-left: 1em;
     padding-right: 1em;
 }
+.path-mod-assign [data-region="grade-panel"] .popout {
+    position: fixed;
+    left: 20%;
+    right: 20%;
+    top: 20%;
+    background-color: #efefef;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    padding: 2em;
+    z-index: 1000;
+}
 .path-mod-assign [data-region="grade-actions-panel"] {
     border-top: 1px solid #ddd;
     position: absolute; bottom: 0; left: 0; width: 100%; height: 6em;
