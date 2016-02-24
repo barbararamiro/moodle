@@ -3268,18 +3268,12 @@ class assign {
         $o .= $this->get_renderer()->heading(get_string('grade'), 3);
         $o .= $this->get_renderer()->render(new assign_form('gradingform', $mform));
 
-        if (count($allsubmissions) > 1 && $attemptnumber == -1) {
+        if (count($allsubmissions) > 1) {
             $allgrades = $this->get_all_grades($userid);
-            $history = new assign_attempt_history($allsubmissions,
-                                                  $allgrades,
-                                                  $this->get_submission_plugins(),
-                                                  $this->get_feedback_plugins(),
-                                                  $this->get_course_module()->id,
-                                                  $this->get_return_action(),
-                                                  $this->get_return_params(),
-                                                  true,
-                                                  0,
-                                                  $rownum);
+            $history = new assign_attempt_history_chooser($allsubmissions,
+                                                          $allgrades,
+                                                          $this->get_course_module()->id,
+                                                          $userid);
 
             $o .= $this->get_renderer()->render($history);
         }

@@ -780,6 +780,21 @@ class mod_assign_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Output the attempt history chooser for this assignment
+     *
+     * @param assign_attempt_history_chooser $history
+     * @return string
+     */
+    public function render_assign_attempt_history_chooser(assign_attempt_history_chooser $history) {
+        $o = '';
+
+        $context = $history->export_for_template($this);
+        $o .= $this->render_from_template('mod_assign/attempt_history_chooser', $context);
+
+        return $o;
+    }
+
+    /**
      * Output the attempt history for this assignment
      *
      * @param assign_attempt_history $history

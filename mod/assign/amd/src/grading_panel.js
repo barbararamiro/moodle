@@ -51,6 +51,9 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
     /** @type {Integer} Remember the last user id to prevent unnessecary reloads. */
     GradingPanel.prototype._lastUserId = -1;
 
+    /** @type {Integer} Remember the last attempt number to prevent unnessecary reloads. */
+    GradingPanel.prototype._lastAttemptNumber = -1;
+
     /** @type {JQuery} JQuery node for the page region containing the user navigation. */
     GradingPanel.prototype._region = null;
 
@@ -174,6 +177,35 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
     };
 
     /**
+     * Open a picker to choose an older attempt.
+     *
+     * @private
+     * @method _chooseAttempt
+     */
+    GradingPanel.prototype._chooseAttempt = function(e) {
+        // Show a dialog.
+
+        // The form is in the element pointed to by data-submissions.
+        var link = $(e.target);
+        var submissionsId = link.data('submissions');
+        var submissionsform = $(document.getElementById(submissionsId));
+        var formcopy = submissionsform.clone();
+        var formhtml = formcopy.wrap($('<form/>')).html();
+
+        str.get_strings([
+            { key: 'viewadifferentattempt', component: 'mod_assign' },
+            { key: 'view', component: 'core' },
+            { key: 'cancel', component: 'core' },
+        ]).done(function(strs) {
+            notification.confirm(strs[0], formhtml, strs[1], strs[2], function() {
+                var attemptnumber = $("input:radio[name='select-attemptnumber']:checked").val();
+
+                this._refreshGradingPanel(null, this._lastUserId, '', attemptnumber);
+            }.bind(this));
+        }.bind(this)).fail(notification.exception);
+    };
+
+    /**
      * Get the user context - re-render the template in the page.
      *
      * @private
@@ -182,16 +214,20 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
      * @param {Number} userid
      * @param {String} serialised submission data.
      */
-    GradingPanel.prototype._refreshGradingPanel = function(event, userid, submissiondata) {
+    GradingPanel.prototype._refreshGradingPanel = function(event, userid, submissiondata, attemptnumber) {
         var contextid = this._region.attr('data-contextid');
         if (typeof submissiondata === 'undefined') {
             submissiondata = '';
         }
+        if (typeof attemptnumber === 'undefined') {
+            attemptnumber = -1;
+        }
         // Skip reloading if it is the same user.
-        if (this._lastUserId == userid && submissiondata === '') {
+        if (this._lastUserId == userid && this._lastAttemptNumber == attemptnumber && submissiondata === '') {
             return;
         }
         this._lastUserId = userid;
+        this._lastAttemptNumber = attemptnumber;
         $(document).trigger('start-loading-user');
         // First insert the loading template.
         templates.render('mod_assign/loading', {}).done(function(html, js) {
@@ -200,13 +236,14 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
                 if (userid > 0) {
                     this._region.show();
                     // Reload the grading form "fragment" for this user.
-                    var params = { userid: userid, attemptnumber: -1, jsonformdata: JSON.stringify(submissiondata) };
+                    var params = { userid: userid, attemptnumber: attemptnumber, jsonformdata: JSON.stringify(submissiondata) };
                     fragment.loadFragment('mod_assign', 'gradingpanel', contextid, params).done(function(html, js) {
                         this._niceReplaceNodeContents(this._region, html, js)
                         .done(function() {
                             checker.saveFormState('[data-region="grade-panel"] .gradeform');
+                            $('[data-region="attempt-chooser"]').on('click', this._chooseAttempt.bind(this));
                             $(document).trigger('finish-loading-user');
-                        })
+                        }.bind(this))
                         .fail(notification.exception);
                     }.bind(this)).fail(notification.exception);
                 } else {

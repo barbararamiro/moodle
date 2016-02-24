@@ -485,3 +485,4 @@ $string['gradechangessaveddetail'] = 'The changes to the grade and feedback were
 $string['saveandcontinue'] = 'Save and continue';
 $string['unsavedchanges'] = 'Unsaved changes';
 $string['unsavedchangesquestion'] = 'There are unsaved changes to grades or feedback. Do you want to save the changes and continue?';
+$string['viewadifferentattempt'] = 'View a different attempt';
