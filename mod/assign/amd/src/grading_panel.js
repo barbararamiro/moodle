@@ -261,6 +261,8 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
         this._lastUserId = userid;
         this._lastAttemptNumber = attemptnumber;
         $(document).trigger('start-loading-user');
+        // Tell behat to back off too.
+        window.M.util.js_pending('mod-assign-loading-user');
         // First insert the loading template.
         templates.render('mod_assign/loading', {}).done(function(html, js) {
             // Update the page.
@@ -276,6 +278,8 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
                             $('[data-region="attempt-chooser"]').on('click', this._chooseAttempt.bind(this));
                             this._addPopoutButtons('[data-region="grade-panel"] .gradeform');
                             $(document).trigger('finish-loading-user');
+                            // Tell behat we are friends again.
+                            window.M.util.js_complete('mod-assign-loading-user');
                         }.bind(this))
                         .fail(notification.exception);
                     }.bind(this)).fail(notification.exception);
@@ -285,6 +289,9 @@ define(['jquery', 'core/notification', 'core/templates', 'core/fragment',
                     if (reviewPanel.length) {
                         this._niceReplaceNodeContents(reviewPanel, '', '');
                     }
+                    $(document).trigger('finish-loading-user');
+                    // Tell behat we are friends again.
+                    window.M.util.js_complete('mod-assign-loading-user');
                 }
             }.bind(this));
         }.bind(this)).fail(notification.exception);

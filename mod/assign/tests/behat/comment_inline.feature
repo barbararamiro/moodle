@@ -48,7 +48,8 @@ Feature: In an assignment, teachers can edit a students submission inline
     And I upload "lib/tests/fixtures/empty.txt" file to "Feedback files" filemanager
     And I press "Save changes"
     And I press "Ok"
-    And I wait until the page is ready
+    # There is a 300 millisecond transition we need to wait for.
+    And I wait "1" seconds
     And I click on "Edit settings" "link"
     And I follow "Test assignment name"
     And I follow "View all submissions"

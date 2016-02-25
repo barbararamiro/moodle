@@ -6570,7 +6570,7 @@ class assign {
 
         if (count($useridlist) > 1) {
             $strparams = array('current'=>$rownum+1, 'total'=>count($useridlist));
-            $name = get_string('outof', 'assign', $strparams);
+            $name = '<span class="currentgrade">' . get_string('outof', 'assign', $strparams) . '</span>';
             $mform->addElement('static', 'gradingstudent', get_string('gradingstudent', 'assign'), $name);
         }
 

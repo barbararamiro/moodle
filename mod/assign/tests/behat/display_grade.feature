@@ -69,7 +69,8 @@ Feature: Check that the assignment grade can be updated correctly
     And I set the field "Grade out of 100" to "50"
     And I press "Save changes"
     And I press "Ok"
-    And I wait until the page is ready
+    # There is a 300 millisecond transition we need to wait for.
+    And I wait "1" seconds
     And I click on "Edit settings" "link"
     And I follow "Test assignment name"
     And I follow "View all submissions"

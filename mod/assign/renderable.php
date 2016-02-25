@@ -607,7 +607,7 @@ class assign_attempt_history_chooser implements renderable, templatable {
 
         foreach ($export->submissions as $i => $submission) {
             $grade = null;
-            foreach ($history->grades as $onegrade) {
+            foreach ($export->grades as $onegrade) {
                 if ($onegrade->attemptnumber == $submission->attemptnumber) {
                     $submission->grade = $onegrade;
                     break;

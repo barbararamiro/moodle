@@ -47,8 +47,7 @@ Feature: In an assignment, teachers can edit feedback for a students previous su
       | Feedback comments | I'm the teacher first feedback |
       | Allow another attempt | Yes |
     And I press "Save changes"
-    And I press "Ok"
-    And I wait until the page is ready
+    And I click on "Ok" "button"
     And I click on "Edit settings" "link"
     And I log out
     And I log in as "student2"
@@ -61,13 +60,14 @@ Feature: In an assignment, teachers can edit feedback for a students previous su
     And I follow "Test assignment name"
     And I follow "View all submissions"
     And I click on "Grade" "link" in the "Student 2" "table_row"
-    And I click on ".mod-assign-history-link" "css_element"
+    And I click on "View a different attempt" "link"
+    And I click on "//div[contains(concat(' ', normalize-space(@class), ' '), ' confirmation-dialogue ')]//input[@value='0']" "xpath_element"
+    And I click on "View" "button"
     And I set the following fields to these values:
       | Grade | 50 |
       | Feedback comments | I'm the teacher second feedback |
     And I press "Save changes"
-    And I press "Ok"
-    And I wait until the page is ready
+    And I click on "Ok" "button"
     And I click on "Edit settings" "link"
     And I log out
     Then I log in as "student2"

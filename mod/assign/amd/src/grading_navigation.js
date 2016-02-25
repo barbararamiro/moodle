@@ -116,7 +116,7 @@ define(['jquery', 'core/notification', 'core/str', 'core/form-autocomplete',
      * @param {Array} users
      */
     GradingNavigation.prototype._usersLoaded = function(users) {
-        this._users = users;
+        this._filteredUsers = this._users = users;
         if (this._users.length) {
             // Position the configure filters panel under the link that expands it.
             var toggleLink = this._region.find('[data-region="user-filters"]');

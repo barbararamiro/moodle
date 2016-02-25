@@ -44,7 +44,7 @@ Feature: In an assignment, students start a new attempt based on their previous 
       | Allow another attempt | 1 |
     And I press "Save changes"
     And I press "Ok"
-    And I wait until the page is ready
+    And I wait "1" seconds
     And I click on "Edit settings" "link"
     And I log out
     And I log in as "student1"

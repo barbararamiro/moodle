@@ -4,7 +4,11 @@
     <div class="hidden" id="submissions-list-{{uniqid}}">
         <div data-region="submissions-list">
         {{#submissions}}
-            <label class="radio"><input type="radio" name="select-attemptnumber" value="{{attemptnumber}}"/>{{attemptsummary}}<br><em>{{statussummary}}</em></label>
+            <label class="radio">
+                <input type="radio" name="select-attemptnumber" value="{{attemptnumber}}"/>
+                {{attemptsummary}}
+                <br><em>{{statussummary}}</em>
+            </label>
         {{/submissions}}
         </div>
     </div>
