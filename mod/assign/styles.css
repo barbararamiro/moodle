@@ -339,19 +339,23 @@
 .path-mod-assign [data-region="user-selector"] .form-autocomplete-selection {
     display: none;
 }
+.path-mod-assign [data-region="user-selector"] .form-autocomplete-suggestions {
+    text-align: left;
+}
 .path-mod-assign [data-region="user-selector"] .alignment {
     float: right;
     width: 250px;
+    text-align: center;
+    margin-top: 7px;
 }
 .dir-rtl.path-mod-assign [data-region="user-selector"] .alignment {
     float: left;
 }
-
-.path-mod-assign [data-region="user-info"] a {
-    text-decoration: none;
+.path-mod-assign [data-region="user-selector"] .alignment input {
+    margin-bottom: 5px;
 }
-.path-mod-assign [data-region="user-info"] {
-    height: 60px;
+.path-mod-assign [data-region="user-selector"] .alignment .form-autocomplete-downarrow {
+    top: 0;
 }
 
 .path-mod-assign [data-region="grading-navigation-panel"] {
@@ -366,6 +370,14 @@
 
 .path-mod-assign [data-region="grading-navigation"] {
     padding: 1em;
+}
+
+.path-mod-assign [data-region="user-info"] {
+    height: 60px;
+}
+
+.path-mod-assign [data-region="user-info"] a {
+    text-decoration: none;
 }
 
 .path-mod-assign [data-region="user-info"] .img-rounded {
@@ -816,13 +828,8 @@
 }
 
 @media (max-width: 767px) {
-    .path-mod-assign [data-region="user-info"] {
-        text-align: center;
-        margin-bottom: 1em;
-    }
-
-    .path-mod-assign [data-region="grade-panel"] [data-region="popout-button"] {
-        display: none;
+    .path-mod-assign .page-context-header .page-header-headings {
+        margin-top: 13px;
     }
     .path-mod-assign [data-region="grading-navigation-panel"],
     .path-mod-assign [data-region="review-panel"],
@@ -836,20 +843,26 @@
         height: auto;
         margin-bottom: 1em;
     }
+    .path-mod-assign [data-region="grading-navigation"] {
+        padding: 0;
+    }
+    .path-mod-assign [data-region="grade-panel"] {
+        margin-bottom: 2em;
+    }
+    .path-mod-assign [data-region="grade-panel"] [data-region="popout-button"] {
+        display: none;
+    }
+    .path-mod-assign [data-region="review-panel"] .pageheader {
+        border-right: none;
+    }
     .path-mod-assign.pagelayout-popup {
         overflow: inherit;
     }
-
-    .path-mod-assign [data-region="assignment-info"] {
-        margin-bottom: 1em;
-    }
-
     .dir-rtl.path-mod-assign [data-region="user-info"] {
         text-align: center;
     }
     .path-mod-assign [data-region="user-selector"] .alignment {
         float: none;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto 10px;
     }
 }
