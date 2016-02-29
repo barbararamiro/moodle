@@ -316,46 +316,90 @@
 .path-mod-assign [data-region="user-selector"] select {
     margin-bottom: 0px;
 }
-.path-mod-assign [data-region="configure-filters"] {
-    display: none;
-    text-align: left;
-    position: absolute;
-    margin-top: 2.5em;
-    margin-left: -10em;
-    width: 10em;
-    z-index: 1;
-}
 
-.path-mod-assign.dir-rtl [data-region="configure-filters"] {
-    text-align: right;
-    margin-left: 0em;
-    margin-right: -10em;
-}
-
-.path-mod-assign [data-region="user-filters"] {
-    font-size: small;
-}
-
-.path-mod-assign [data-region="user-selector"] .form-autocomplete-selection {
-    display: none;
-}
-.path-mod-assign [data-region="user-selector"] .form-autocomplete-suggestions {
-    text-align: left;
-}
 .path-mod-assign [data-region="user-selector"] .alignment {
     float: right;
     width: 250px;
     text-align: center;
     margin-top: 7px;
 }
+
 .dir-rtl.path-mod-assign [data-region="user-selector"] .alignment {
     float: left;
 }
+
 .path-mod-assign [data-region="user-selector"] .alignment input {
     margin-bottom: 5px;
 }
+
 .path-mod-assign [data-region="user-selector"] .alignment .form-autocomplete-downarrow {
     top: 0;
+}
+
+.path-mod-assign [data-region="user-selector"] .form-autocomplete-selection {
+    display: none;
+}
+
+.path-mod-assign [data-region="user-selector"] .form-autocomplete-suggestions {
+    text-align: left;
+}
+
+.path-mod-assign [data-region="user-filters"] {
+    font-size: small;
+}
+
+.path-mod-assign [data-region="configure-filters"] {
+    display: none;
+    text-align: left;
+    width: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    position: absolute;
+    margin-top: 28px;
+    margin-left: -140px;
+    padding: 10px 0;
+    z-index: 1;
+}
+
+.path-mod-assign [data-region="configure-filters"]::before,
+.path-mod-assign [data-region="configure-filters"]::after {
+    position: absolute;
+    left: auto;
+    display: inline-block;
+    content: '';
+    border-style: solid;
+    border-color: transparent;
+    border-top: none;
+}
+
+.path-mod-assign [data-region="configure-filters"]::before {
+    top: -7px;
+    right: 12px;
+    border-width: 7px;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+}
+
+.path-mod-assign [data-region="configure-filters"]::after {
+    top: -6px;
+    right: 13px;
+    border-width: 6px;
+    border-bottom-color: #fff;
+}
+
+.path-mod-assign.dir-rtl [data-region="configure-filters"] {
+    text-align: right;
+    margin-left: 0;
+    margin-right: -140px;
+}
+
+.path-mod-assign [data-region="configure-filters"] label {
+    padding: 3px 20px;
+}
+
+.path-mod-assign .alignment [data-region="configure-filters"] input {
+    margin-bottom: 0;
 }
 
 .path-mod-assign [data-region="grading-navigation-panel"] {
