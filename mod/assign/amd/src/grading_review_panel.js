@@ -25,6 +25,13 @@
  */
 define(['jquery'], function($) {
 
+    var container = $('[data-region="review-panel"]');
+    var collapseButton = container.find('#review-panel-toggle');
+    collapseButton.click(function(e) {
+        container.toggleClass('collapsed');
+        e.preventDefault;
+    });
+
     /**
      * GradingReviewPanel class.
      *
@@ -32,7 +39,7 @@ define(['jquery'], function($) {
      * @param {String} selector The selector for the page region containing the user navigation.
      */
     var GradingReviewPanel = function() {
-        this._region = $('[data-region="review-panel"]');
+        this._region = $('[data-region="review-panel-content"]');
     };
 
     /** @type {JQuery} JQuery node for the page region containing the user navigation. */
