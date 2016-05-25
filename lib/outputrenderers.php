@@ -3258,6 +3258,22 @@ EOD;
     }
 
     /**
+     * Returns the noticication menu
+     *
+     * @return string         HTML for the notification menu
+     */
+    public function notification_menu() {
+        global $USER;
+
+        if (isloggedin()) {
+            $context = ['userid' => $USER->id];
+            return $this->render_from_template('message/notification_menu', $context);
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * Construct a user menu, returning HTML that can be echoed out by a
      * layout file.
      *
