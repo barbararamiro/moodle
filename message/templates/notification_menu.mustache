@@ -33,8 +33,11 @@
     }
 
 }}
-<div id="nav-notification-menu-container" class="collapsed">
-    <div class="nav-icon">{{#pix}} i/publish, core, Toggle notification menu {{/pix}}</div>
+<div id="nav-notification-menu-container" class="collapsed" data-userid="{{userid}}">
+    <div class="nav-icon">
+        {{#pix}} i/publish, core, Toggle notification menu {{/pix}}
+        <div class="count-container">99+</div>
+    </div>
     <div class="menu-container">
         <div class="menu-header-container">
             <h3 class="menu-header-text">Notifications</h3>
@@ -43,7 +46,9 @@
                 <a href="#">{{#pix}} i/settings, core, Notification preferences {{/pix}}</a>
             </div>
         </div>
-        <div class="menu-content">
+        <div class="menu-content-container">
+            <div class="menu-content"></div>
+            <div class="loading-icon">{{#pix}}y/loading, core, {{#str}}loading, mod_assign{{/str}}{{/pix}}</div>
         </div>
     </div>
 </div>

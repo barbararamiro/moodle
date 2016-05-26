@@ -609,6 +609,7 @@ $functions = array(
         'description' => 'Retrieve a list of messages sent and received by a user (conversations, notifications or both)',
         'type' => 'read',
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        'ajax' => true,
     ),
     'core_message_mark_message_read' => array(
         'classname' => 'core_message_external',

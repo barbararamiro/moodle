@@ -25,14 +25,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.2
  */
-define(['jquery', 'core/ajax', 'core/templates', 'core/str'],
-        function($, ajax, templates, str) {
+define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'message/notification_repository'],
+        function($, ajax, templates, str, debugNotification, notificationRepo) {
 
     var NotificationMenuController = function(element) {
         this.root = $(element);
+        this.content = this.root.find('.menu-content');
+        this.contentContainer = this.root.find('.menu-content-container');
         this.menuToggle = this.root.find('.nav-icon');
+        this.limit = 20;
+        this.offset = 0;
+        this.isLoading = false;
+        this.hasLoadedAllNotifications = false;
 
         this.registerEventListeners();
+        this.loadMoreNotifications();
     };
 
     NotificationMenuController.prototype.toggleMenu = function() {
@@ -41,6 +48,52 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'],
 
     NotificationMenuController.prototype.closeMenu = function() {
         this.root.addClass('collapsed');
+    };
+
+    NotificationMenuController.prototype.startLoading = function() {
+        this.isLoading = true;
+        this.contentContainer.addClass('loading');
+    };
+
+    NotificationMenuController.prototype.stopLoading = function() {
+        this.isLoading = false;
+        this.contentContainer.removeClass('loading');
+    };
+
+    NotificationMenuController.prototype.renderNotifications = function(notifications) {
+        $.each(notifications, function(index, notification) {
+            templates.render('message/notification_menu_item', notification).done(function(html, js) {
+                this.content.append(html);
+                templates.runTemplateJS(js);
+            }.bind(this));
+        }.bind(this));
+    };
+
+    NotificationMenuController.prototype.loadMoreNotifications = function() {
+        if (this.isLoading || this.hasLoadedAllNotifications) {
+            return $.Deferred().promise.resolve();
+        }
+
+        this.startLoading();
+
+        var promise = notificationRepo.query({
+            limit: this.limit,
+            offset: this.offset,
+            useridto: this.root.attr('data-userid'),
+        }).then(function(result) {
+            var notifications = result.messages;
+
+            if (!notifications.length || notifications.length < this.limit) {
+                this.hasLoadedAllNotifications = true;
+            } else {
+                this.renderNotifications(result.messages);
+                this.offset += this.limit;
+            }
+        }.bind(this))
+        .fail(debugNotification.exception)
+        .always(function() { this.stopLoading() }.bind(this));
+
+        return promise;
     };
 
     NotificationMenuController.prototype.registerEventListeners = function() {
@@ -54,6 +107,23 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str'],
                 this.closeMenu();
             }
         }.bind(this));
+
+        this.contentContainer.scroll(function(e) {
+             if (!this.isLoading && !this.hasLoadedAllNotifications) {
+                var scrollTop = this.contentContainer.scrollTop();
+                var innerHeight = this.contentContainer.innerHeight();
+                var scrollHeight = this.contentContainer[0].scrollHeight;
+
+                if (scrollTop + innerHeight >= scrollHeight) {
+                    this.loadMoreNotifications();
+                }
+             }
+         }.bind(this));
+
+        this.root.on('click', '.menu-content-item-container', function(e) {
+            var container = $(e.target).closest('.menu-content-item-container');
+            container.toggleClass('expanded');
+        });
     };
 
     return NotificationMenuController;
