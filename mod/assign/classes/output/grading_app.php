@@ -110,18 +110,6 @@ class grading_app implements templatable, renderable {
             $num++;
         }
 
-        $feedbackplugins = $this->assignment->get_feedback_plugins();
-        $showreview = false;
-        foreach ($feedbackplugins as $plugin) {
-            if ($plugin->is_enabled() && $plugin->is_visible()) {
-                if ($plugin->supports_review_panel()) {
-                    $showreview = true;
-                }
-            }
-        }
-
-        $export->showreview = $showreview;
-
         $time = time();
         $export->count = count($export->participants);
         $export->coursename = $this->assignment->get_course_context()->get_context_name();
