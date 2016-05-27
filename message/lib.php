@@ -2877,6 +2877,22 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
     return array_values($DB->get_records_sql($sql, $params, $offset, $limit));
 }
 
+function message_count_unread_notifications($useridto = 0, $useridfrom = 0) {
+    global $USER, $DB;
+
+    if (empty($useridto)) {
+        $useridto = $USER->id;
+    }
+
+    if (!empty($useridfrom)) {
+        return $DB->count_records_select('message', "useridto = ? AND useridfrom = ? AND notification = 1",
+            array($useridto, $useridfrom), "COUNT('id')");
+    } else {
+        return $DB->count_records_select('message', "useridto = ? AND notification = 1",
+            array($useridto), "COUNT('id')");
+    }
+}
+
 /**
  * Requires the JS libraries to send a message using a dialog.
  *

@@ -836,6 +836,269 @@ class core_message_external extends external_api {
     }
 
     /**
+     * Get notifications parameters description.
+     *
+     * @return external_function_parameters
+     * @since 3.2
+     */
+    public static function get_notifications_parameters() {
+        return new external_function_parameters(
+            array(
+                'useridto' => new external_value(PARAM_INT, 'the user id who received the message, 0 for any user', VALUE_REQUIRED),
+                'useridfrom' => new external_value(
+                    PARAM_INT, 'the user id who send the message, 0 for any user. -10 or -20 for no-reply or support user',
+                    VALUE_DEFAULT, 0),
+                'status' => new external_value(
+                    PARAM_ALPHA, 'filter the results to just "read" or "unread" notifications',
+                    VALUE_DEFAULT, ''),
+                'newestfirst' => new external_value(
+                    PARAM_BOOL, 'true for ordering by newest first, false for oldest first',
+                    VALUE_DEFAULT, true),
+                'limit' => new external_value(PARAM_INT, 'the number of results to return', VALUE_DEFAULT, 0),
+                'offset' => new external_value(PARAM_INT, 'offset the result set by a given amount', VALUE_DEFAULT, 0)
+            )
+        );
+    }
+
+    /**
+     * Get notifications function.
+     *
+     * @since  3.2
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @param  int      $useridto       the user id who received the message
+     * @param  int      $useridfrom     the user id who send the message. -10 or -20 for no-reply or support user
+     * @param  string   $status         filter the results to only read or unread notifications
+     * @param  bool     $newestfirst    true for ordering by newest first, false for oldest first
+     * @param  int      $limit          the number of results to return
+     * @param  int      $offset         offset the result set by a given amount
+     * @return external_description
+     */
+    public static function get_notifications($useridto, $useridfrom, $status, $newestfirst, $limit, $offset) {
+        global $CFG, $USER;
+
+        $params = self::validate_parameters(
+            self::get_notifications_parameters(),
+            array(
+                'useridto' => $useridto,
+                'useridfrom' => $useridfrom,
+                'status' => $status,
+                'newestfirst' => $newestfirst,
+                'limit' => $limit,
+                'offset' => $offset,
+            )
+        );
+
+        $context = context_system::instance();
+        self::validate_context($context);
+
+        $useridto = $params['useridto'];
+        $useridfrom = $params['useridfrom'];
+        $newestfirst = $params['newestfirst'];
+        $limit = $params['limit'];
+        $offset = $params['offset'];
+
+        if (!empty($useridto)) {
+            if (core_user::is_real_user($useridto)) {
+                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+            } else {
+                throw new moodle_exception('invaliduser');
+            }
+        }
+
+        if (!empty($useridfrom)) {
+            // We use get_user here because the from user can be the noreply or support user.
+            $userfrom = core_user::get_user($useridfrom, '*', MUST_EXIST);
+        }
+
+        // Check if the current user is the sender/receiver or just a privileged user.
+        if ($useridto != $USER->id and $useridfrom != $USER->id and
+             !has_capability('moodle/site:readallmessages', $context)) {
+            throw new moodle_exception('accessdenied', 'admin');
+        }
+
+        $sort = $newestfirst ? 'DESC' : 'ASC';
+        $notifications = message_get_notifications($useridto, $useridfrom, $status, $sort, $limit, $offset);
+
+        if ($notifications) {
+            $canviewfullname = has_capability('moodle/site:viewfullnames', $context);
+
+            // In some cases, we don't need to get the to/from user objects from the sql query.
+            $userfromfullname = '';
+            $usertofullname = '';
+
+            // In this case, the useridto field is not empty, so we can get the user destinatary fullname from there.
+            if (!empty($useridto)) {
+                $usertofullname = fullname($userto, $canviewfullname);
+                // The user from may or may not be filled.
+                if (!empty($useridfrom)) {
+                    $userfromfullname = fullname($userfrom, $canviewfullname);
+                }
+            } else {
+                // If the useridto field is empty, the useridfrom must be filled.
+                $userfromfullname = fullname($userfrom, $canviewfullname);
+            }
+
+            foreach ($notifications as $notification) {
+
+                // Do not return deleted messages.
+                if (($useridto == $USER->id and $notification->timeusertodeleted) or
+                        ($useridfrom == $USER->id and $notification->timeuserfromdeleted)) {
+
+                    $notification->deleted = true;
+                } else {
+                    $notification->deleted = false;
+                }
+
+                // We need to get the user from the query.
+                if (empty($userfromfullname)) {
+                    // Check for non-reply and support users.
+                    if (core_user::is_real_user($notification->useridfrom)) {
+                        $user = new stdClass();
+                        $user = username_load_fields_from_object($user, $notification, 'userfrom');
+                        $notification->userfromfullname = fullname($user, $canviewfullname);
+                    } else {
+                        $user = core_user::get_user($notification->useridfrom);
+                        $notification->userfromfullname = fullname($user, $canviewfullname);
+                    }
+                } else {
+                    $notification->userfromfullname = $userfromfullname;
+                }
+
+                // We need to get the user from the query.
+                if (empty($usertofullname)) {
+                    $user = new stdClass();
+                    $user = username_load_fields_from_object($user, $notification, 'userto');
+                    $notification->usertofullname = fullname($user, $canviewfullname);
+                } else {
+                    $notification->usertofullname = $usertofullname;
+                }
+
+                $notification->text = message_format_message_text($notification);
+                $notification->read = $notification->timeread ? true : false;
+            }
+        }
+
+        return array(
+            'notifications' => $notifications,
+            'unreadcount' => message_count_unread_notifications($useridto, $useridfrom),
+        );
+    }
+
+    /**
+     * Get notifications return description.
+     *
+     * @return external_single_structure
+     * @since 3.2
+     */
+    public static function get_notifications_returns() {
+        return new external_single_structure(
+            array(
+                'notifications' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'id' => new external_value(PARAM_TEXT, 'notification id'),
+                            'useridfrom' => new external_value(PARAM_INT, 'User from id'),
+                            'useridto' => new external_value(PARAM_INT, 'User to id'),
+                            'subject' => new external_value(PARAM_TEXT, 'The notification subject'),
+                            'text' => new external_value(PARAM_RAW, 'The message text formated'),
+                            'fullmessage' => new external_value(PARAM_RAW, 'The message'),
+                            'fullmessageformat' => new external_format_value('fullmessage'),
+                            'fullmessagehtml' => new external_value(PARAM_RAW, 'The message in html'),
+                            'smallmessage' => new external_value(PARAM_RAW, 'The shorten message'),
+                            'contexturl' => new external_value(PARAM_RAW, 'Context URL'),
+                            'contexturlname' => new external_value(PARAM_TEXT, 'Context URL link name'),
+                            'timecreated' => new external_value(PARAM_INT, 'Time created'),
+                            'timeread' => new external_value(PARAM_INT, 'Time read'),
+                            'usertofullname' => new external_value(PARAM_TEXT, 'User to full name'),
+                            'userfromfullname' => new external_value(PARAM_TEXT, 'User from full name'),
+                            'read' => new external_value(PARAM_BOOL, 'notification read status'),
+                            'deleted' => new external_value(PARAM_BOOL, 'notification deletion status'),
+                        ), 'message'
+                    )
+                ),
+                'unreadcount' => new external_value(PARAM_INT, 'the user whose blocked users we want to retrieve'),
+            )
+        );
+    }
+
+    /**
+     * Get unread notification count parameters description.
+     *
+     * @return external_function_parameters
+     * @since 3.2
+     */
+    public static function get_unread_notification_count_parameters() {
+        return new external_function_parameters(
+            array(
+                'useridto' => new external_value(PARAM_INT, 'the user id who received the message, 0 for any user', VALUE_REQUIRED),
+                'useridfrom' => new external_value(
+                    PARAM_INT, 'the user id who send the message, 0 for any user. -10 or -20 for no-reply or support user',
+                    VALUE_DEFAULT, 0),
+            )
+        );
+    }
+
+    /**
+     * Get unread notification count function.
+     *
+     * @since  3.2
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @param  int      $useridto       the user id who received the message
+     * @param  int      $useridfrom     the user id who send the message. -10 or -20 for no-reply or support user
+     * @return external_description
+     */
+    public static function get_unread_notification_count($useridto, $useridfrom) {
+        global $CFG, $USER;
+
+        $params = self::validate_parameters(
+            self::get_unread_notification_count_parameters(),
+            array(
+                'useridto' => $useridto,
+                'useridfrom' => $useridfrom,
+            )
+        );
+
+        $context = context_system::instance();
+        self::validate_context($context);
+
+        $useridto = $params['useridto'];
+        $useridfrom = $params['useridfrom'];
+
+        if (!empty($useridto)) {
+            if (core_user::is_real_user($useridto)) {
+                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+            } else {
+                throw new moodle_exception('invaliduser');
+            }
+        }
+
+        if (!empty($useridfrom)) {
+            // We use get_user here because the from user can be the noreply or support user.
+            $userfrom = core_user::get_user($useridfrom, '*', MUST_EXIST);
+        }
+
+        // Check if the current user is the sender/receiver or just a privileged user.
+        if ($useridto != $USER->id and $useridfrom != $USER->id and
+             !has_capability('moodle/site:readallmessages', $context)) {
+            throw new moodle_exception('accessdenied', 'admin');
+        }
+
+        return message_count_unread_notifications($useridto, $useridfrom);
+    }
+
+    /**
+     * Get unread notification count return description.
+     *
+     * @return external_single_structure
+     * @since 3.2
+     */
+    public static function get_unread_notification_count_returns() {
+        return new external_value(PARAM_INT, 'the user whose blocked users we want to retrieve');
+    }
+
+    /**
      * Get blocked users parameters description.
      *
      * @return external_function_parameters

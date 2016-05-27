@@ -35,15 +35,21 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         this.menuToggle = this.root.find('.nav-icon');
         this.limit = 20;
         this.offset = 0;
+        this.unreadCount = 0;
         this.isLoading = false;
         this.hasLoadedAllNotifications = false;
+        this.initialLoad = false;
 
         this.registerEventListeners();
-        this.loadMoreNotifications();
+        this.loadNotificationCount();
     };
 
     NotificationMenuController.prototype.toggleMenu = function() {
         this.root.toggleClass('collapsed');
+
+        if (!this.initialLoad) {
+            this.loadMoreNotifications();
+        }
     };
 
     NotificationMenuController.prototype.closeMenu = function() {
@@ -60,12 +66,30 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         this.contentContainer.removeClass('loading');
     };
 
+    NotificationMenuController.prototype.renderUnreadCount = function() {
+        var element = this.root.find('.count-container');
+
+        if (this.unreadCount) {
+            element.text(this.unreadCount);
+            element.removeClass('hidden');
+        } else {
+            element.addClass('hidden');
+        }
+    };
+
     NotificationMenuController.prototype.renderNotifications = function(notifications) {
         $.each(notifications, function(index, notification) {
             templates.render('message/notification_menu_item', notification).done(function(html, js) {
                 this.content.append(html);
                 templates.runTemplateJS(js);
             }.bind(this));
+        }.bind(this));
+    };
+
+    NotificationMenuController.prototype.loadNotificationCount = function() {
+        notificationRepo.countUnread({useridto: this.root.attr('data-userid')}).then(function(count) {
+            this.unreadCount = count;
+            this.renderUnreadCount();
         }.bind(this));
     };
 
@@ -81,12 +105,14 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             offset: this.offset,
             useridto: this.root.attr('data-userid'),
         }).then(function(result) {
-            var notifications = result.messages;
+            var notifications = result.notifications;
+            this.unreadCount = result.unreadcount;
+            this.renderUnreadCount();
 
             if (!notifications.length || notifications.length < this.limit) {
                 this.hasLoadedAllNotifications = true;
             } else {
-                this.renderNotifications(result.messages);
+                this.renderNotifications(notifications);
                 this.offset += this.limit;
             }
         }.bind(this))

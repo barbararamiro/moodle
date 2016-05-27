@@ -611,6 +611,22 @@ $functions = array(
         'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         'ajax' => true,
     ),
+    'core_message_get_notifications' => array(
+        'classname' => 'core_message_external',
+        'methodname' => 'get_notifications',
+        'classpath' => 'message/externallib.php',
+        'description' => 'Retrieve a list of notifications sent and received by a user',
+        'type' => 'read',
+        'ajax' => true,
+    ),
+    'core_message_get_unread_notification_count' => array(
+        'classname' => 'core_message_external',
+        'methodname' => 'get_unread_notification_count',
+        'classpath' => 'message/externallib.php',
+        'description' => 'Retrieve the count of unread notifications for a given user',
+        'type' => 'read',
+        'ajax' => true,
+    ),
     'core_message_mark_message_read' => array(
         'classname' => 'core_message_external',
         'methodname' => 'mark_message_read',

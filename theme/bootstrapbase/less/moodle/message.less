@@ -542,7 +542,7 @@ table.message .searchresults td {
                         width: 100%;
                         opacity: 1;
                         visibility: visible;
-                        transition: opacity 0s 0.25s, visibility 0s 0.25s, max-height 0.5s 0.25s;
+                        transition: opacity 0s 0.25s, visibility 0s 0.25s, max-height 1s 0.25s;
                     }
                     .content-body-full {
                         overflow: hidden;
@@ -566,6 +566,10 @@ table.message .searchresults td {
                             visibility: visible;
                             transition: max-height 2s 0.25s, opacity 0s 0.25s, visibility 0s 0.25s;
                         }
+                    }
+
+                    &.unread {
+                        background-color: #f5f5f5;
                     }
                 }
             }

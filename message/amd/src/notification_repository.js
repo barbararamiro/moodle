@@ -26,23 +26,28 @@
 define(['core/ajax', 'core/notification'], function(ajax, notification) {
     var query = function(args) {
         if (typeof args.limit === 'undefined') {
-            args.limitnum = 20;
-        } else {
-            args.limitnum = args.limit;
-            delete args.limit;
+            args.limit = 20;
         }
 
         if (typeof args.offset === 'undefined') {
-            args.limitfrom = 0;
-        } else {
-            args.limitfrom = args.offset;
-            delete args.offset;
+            args.offset = 0;
         }
 
-        args.type = 'notifications';
-
         var request = {
-            methodname: 'core_message_get_messages',
+            methodname: 'core_message_get_notifications',
+            args: args
+        };
+
+        var promise = ajax.call([request])[0];
+
+        promise.fail(notification.exception);
+
+        return promise;
+    };
+
+    var countUnread = function(args) {
+        var request = {
+            methodname: 'core_message_get_unread_notification_count',
             args: args
         };
 
@@ -55,5 +60,6 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
 
     return {
         query: query,
+        countUnread: countUnread,
     };
 });
