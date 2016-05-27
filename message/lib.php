@@ -2817,6 +2817,66 @@ function message_get_messages($useridto, $useridfrom = 0, $notifications = -1, $
     return $messages;
 }
 
+function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '', $sort = 'DESC', $limit = 0, $offset = 0) {
+    global $DB;
+
+    if (!empty($status) && $status != 'read' && $status != 'unread') {
+        throw new moodle_exception('invalid parameter: status: must be "read" or "unread"');
+    }
+
+    $sort = strtoupper($sort);
+    if ($sort != 'DESC' && $sort != 'ASC') {
+        throw new moodle_exception('invalid parameter: sort: must be "DESC" or "ASC"');
+    }
+
+    $params = array();
+
+    $buildtablesql = function($table, $prefix, $additionalfields) use ($useridto, $useridfrom) {
+        $params = array();
+        $fields = "concat('$prefix', $prefix.id) as id, $prefix.useridfrom, $prefix.useridto,
+            $prefix.subject, $prefix.fullmessage, $prefix.fullmessageformat,
+            $prefix.fullmessagehtml, $prefix.smallmessage, $prefix.contexturl,
+            $prefix.contexturlname, $prefix.timecreated, $prefix.timeuserfromdeleted, $prefix.timeusertodeleted, $additionalfields";
+        $where = '';
+
+        if (empty($useridto)) {
+            $where .= " AND $prefix.useridfrom = :{$prefix}useridfrom";
+            $params["{$prefix}useridfrom"] = $useridfrom;
+        } else {
+            $where .= " AND $prefix.useridto = :{$prefix}useridto";
+            $params["{$prefix}useridto"] = $useridto;
+
+            if (!empty($useridfrom)) {
+                $where .= " AND $prefix.useridfrom = :{$prefix}useridfrom";
+                $params["{$prefix}useridfrom"] = $useridfrom;
+            }
+        }
+
+        return array(sprintf("SELECT %s FROM %s $prefix WHERE $prefix.notification = 1 %s", $fields, $table, $where), $params);
+    };
+
+    $sql = '';
+    switch ($status) {
+        case 'read':
+            list($sql, $readparams) = $buildtablesql('{message_read}', 'r', 'r.timeread');
+            $params = array_merge($params, $readparams);
+            break;
+        case 'unread':
+            list($sql, $unreadparams) = $buildtablesql('{message}', 'u', '0 as timeread');
+            $params = array_merge($params, $unreadparams);
+            break;
+        default:
+            list($readsql, $readparams) = $buildtablesql('{message_read}', 'r', 'r.timeread');
+            list($unreadsql, $unreadparams) = $buildtablesql('{message}', 'u', '0 as timeread');
+            $sql = sprintf("SELECT * FROM (%s UNION %s) f", $readsql, $unreadsql);
+            $params = array_merge($params, $readparams, $unreadparams);
+    }
+
+    $sql .= " ORDER BY timecreated $sort, timeread $sort";
+
+    return array_values($DB->get_records_sql($sql, $params, $offset, $limit));
+}
+
 /**
  * Requires the JS libraries to send a message using a dialog.
  *
