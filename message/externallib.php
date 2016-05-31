@@ -921,27 +921,24 @@ class core_message_external extends external_api {
         $notifications = message_get_notifications($useridto, $useridfrom, $status, $sort, $limit, $offset);
 
         if ($notifications) {
-            $canviewfullname = has_capability('moodle/site:viewfullnames', $context);
-
             // In some cases, we don't need to get the to/from user objects from the sql query.
             $userfromfullname = '';
             $usertofullname = '';
 
             // In this case, the useridto field is not empty, so we can get the user destinatary fullname from there.
             if (!empty($useridto)) {
-                $usertofullname = fullname($userto, $canviewfullname);
+                $usertofullname = fullname($userto);
                 // The user from may or may not be filled.
                 if (!empty($useridfrom)) {
-                    $userfromfullname = fullname($userfrom, $canviewfullname);
+                    $userfromfullname = fullname($userfrom);
                 }
             } else {
                 // If the useridto field is empty, the useridfrom must be filled.
-                $userfromfullname = fullname($userfrom, $canviewfullname);
+                $userfromfullname = fullname($userfrom);
             }
 
             foreach ($notifications as $notification) {
 
-                // Do not return deleted messages.
                 if (($useridto == $USER->id and $notification->timeusertodeleted) or
                         ($useridfrom == $USER->id and $notification->timeuserfromdeleted)) {
 
@@ -974,6 +971,7 @@ class core_message_external extends external_api {
                     $notification->usertofullname = $usertofullname;
                 }
 
+                $notification->timecreatedpretty = get_string('ago', 'message', format_time(time() - $notification->timecreated));
                 $notification->text = message_format_message_text($notification);
                 $notification->read = $notification->timeread ? true : false;
             }
@@ -1009,6 +1007,7 @@ class core_message_external extends external_api {
                             'contexturl' => new external_value(PARAM_RAW, 'Context URL'),
                             'contexturlname' => new external_value(PARAM_TEXT, 'Context URL link name'),
                             'timecreated' => new external_value(PARAM_INT, 'Time created'),
+                            'timecreatedpretty' => new external_value(PARAM_TEXT, 'Time created in a pretty format'),
                             'timeread' => new external_value(PARAM_INT, 'Time read'),
                             'usertofullname' => new external_value(PARAM_TEXT, 'User to full name'),
                             'userfromfullname' => new external_value(PARAM_TEXT, 'User from full name'),

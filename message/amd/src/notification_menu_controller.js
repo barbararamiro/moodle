@@ -49,6 +49,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
 
         if (!this.initialLoad) {
             this.loadMoreNotifications();
+            this.initialLoad = true;
         }
     };
 
@@ -78,12 +79,14 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
     };
 
     NotificationMenuController.prototype.renderNotifications = function(notifications) {
-        $.each(notifications, function(index, notification) {
-            templates.render('message/notification_menu_item', notification).done(function(html, js) {
-                this.content.append(html);
-                templates.runTemplateJS(js);
+        if (notifications.length) {
+            $.each(notifications, function(index, notification) {
+                templates.render('message/notification_menu_item', notification).done(function(html, js) {
+                    this.content.append(html);
+                    templates.runTemplateJS(js);
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
+        }
     };
 
     NotificationMenuController.prototype.loadNotificationCount = function() {
@@ -108,10 +111,9 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             var notifications = result.notifications;
             this.unreadCount = result.unreadcount;
             this.renderUnreadCount();
+            this.hasLoadedAllNotifications = !notifications.length || notifications.length < this.limit;
 
-            if (!notifications.length || notifications.length < this.limit) {
-                this.hasLoadedAllNotifications = true;
-            } else {
+            if (notifications.length) {
                 this.renderNotifications(notifications);
                 this.offset += this.limit;
             }
@@ -146,10 +148,29 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
              }
          }.bind(this));
 
-        this.root.on('click', '.menu-content-item-container', function(e) {
+        this.root.on('click', '.show-button', function(e) {
             var container = $(e.target).closest('.menu-content-item-container');
-            container.toggleClass('expanded');
+            container.addClass('expanded');
+            e.preventDefault();
         });
+
+        this.root.on('click', '.hide-button', function(e) {
+            var container = $(e.target).closest('.menu-content-item-container');
+            container.removeClass('expanded');
+            e.preventDefault();
+        });
+
+        this.root.find('.fancy-toggle').click(function(e) {
+            var toggle = this.root.find('.fancy-toggle');
+
+            if (toggle.hasClass('on')) {
+                toggle.removeClass('on');
+                toggle.addClass('off');
+            } else {
+                toggle.removeClass('off');
+                toggle.addClass('on');
+            }
+        }.bind(this));
     };
 
     return NotificationMenuController;

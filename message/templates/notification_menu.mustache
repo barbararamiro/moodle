@@ -40,15 +40,19 @@
     </div>
     <div class="menu-container">
         <div class="menu-header-container">
-            <h3 class="menu-header-text">Notifications</h3>
+            <h3 class="menu-header-text">{{#str}} notifications, message {{/str}}</h3>
             <div class="menu-header-actions pull-right">
-                <a href="#">mark all as read</a>
-                <a href="#">{{#pix}} i/settings, core, Notification preferences {{/pix}}</a>
+                <div class="fancy-toggle on">
+                    <div class="slider-container"><div class="slider"></div></div>
+                    <div class="off-text">{{#str}} all {{/str}}</div>
+                    <div class="on-text">{{#str}} unread, mod_forum {{/str}}</div>
+                </div>
+                <a href="{{{urls.preferences}}}">{{#pix}} i/settings, core, {{#str}} notificationpreferences, message {{/str}} {{/pix}}</a>
             </div>
         </div>
         <div class="menu-content-container">
             <div class="menu-content"></div>
-            <div class="loading-icon">{{#pix}}y/loading, core, {{#str}}loading, mod_assign{{/str}}{{/pix}}</div>
+            <div class="loading-icon">{{#pix}} y/loading, core, {{#str}} loading, mod_assign {{/str}} {{/pix}}</div>
         </div>
     </div>
 </div>

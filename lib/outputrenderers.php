@@ -3266,7 +3266,12 @@ EOD;
         global $USER;
 
         if (isloggedin()) {
-            $context = ['userid' => $USER->id];
+            $context = [
+                'userid' => $USER->id,
+                'urls' => [
+                    'preferences' => (new moodle_url('/message/edit.php', ['id' => $USER->id]))->out(),
+                ],
+            ];
             return $this->render_from_template('message/notification_menu', $context);
         } else {
             return '';
