@@ -33,28 +33,86 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         this.content = this.root.find('.menu-content');
         this.contentContainer = this.root.find('.menu-content-container');
         this.menuToggle = this.root.find('.nav-icon');
-        this.limit = 20;
-        this.offset = 0;
         this.unreadCount = 0;
         this.isLoading = false;
-        this.hasLoadedAllNotifications = false;
-        this.initialLoad = false;
+        this.userId = this.root.attr('data-userid');
+        this.modeToggle = this.root.find('.menu-header-actions .fancy-toggle');
+        this.config = {
+            unread: {
+                container: this.content.find('.unread-notifications'),
+                limit: 20,
+                offset: 0,
+                loadedAll: false,
+                initialLoad: false,
+            },
+            all: {
+                container: this.content.find('.all-notifications'),
+                limit: 20,
+                offset: 0,
+                loadedAll: false,
+                initialLoad: false,
+            }
+        };
 
         this.registerEventListeners();
-        this.loadNotificationCount();
+        this.loadUnreadNotificationCount();
     };
 
     NotificationMenuController.prototype.toggleMenu = function() {
-        this.root.toggleClass('collapsed');
-
-        if (!this.initialLoad) {
-            this.loadMoreNotifications();
-            this.initialLoad = true;
+        if (this.root.hasClass('collapsed')) {
+            this.openMenu();
+        } else {
+            this.closeMenu();
         }
     };
 
     NotificationMenuController.prototype.closeMenu = function() {
         this.root.addClass('collapsed');
+    };
+
+    NotificationMenuController.prototype.openMenu = function() {
+        this.root.removeClass('collapsed');
+        this.hideUnreadCount();
+
+        if (!this.hasDoneInitialLoad()) {
+            this.loadMoreNotifications();
+        }
+    };
+
+    NotificationMenuController.prototype.unreadOnlyMode = function() {
+        return this.modeToggle.hasClass('on');
+    };
+
+    NotificationMenuController.prototype.getConfig = function() {
+        if (this.unreadOnlyMode()) {
+            return this.config.unread;
+        } else {
+            return this.config.all;
+        }
+    };
+
+    NotificationMenuController.prototype.getOffset = function() {
+        return this.getConfig().offset;
+    };
+
+    NotificationMenuController.prototype.incrementOffset = function() {
+        this.getConfig().offset += this.getConfig().limit;
+    };
+
+    NotificationMenuController.prototype.getNotificationsContainer = function() {
+        return this.getConfig().container;
+    };
+
+    NotificationMenuController.prototype.hasDoneInitialLoad = function() {
+        return this.getConfig().initialLoad;
+    };
+
+    NotificationMenuController.prototype.hasLoadedAllNotifications = function() {
+        return this.getConfig().loadedAll;
+    };
+
+    NotificationMenuController.prototype.setLoadedAllNotifications = function(val) {
+        this.getConfig().loadedAll = val;
     };
 
     NotificationMenuController.prototype.startLoading = function() {
@@ -78,44 +136,53 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         }
     };
 
+    NotificationMenuController.prototype.hideUnreadCount = function() {
+        this.root.find('.count-container').addClass('hidden');
+    };
+
+    NotificationMenuController.prototype.loadUnreadNotificationCount = function() {
+        notificationRepo.countUnread({useridto: this.userId}).then(function(count) {
+            this.unreadCount = count;
+            this.renderUnreadCount();
+        }.bind(this));
+    };
+
     NotificationMenuController.prototype.renderNotifications = function(notifications) {
         if (notifications.length) {
             $.each(notifications, function(index, notification) {
                 templates.render('message/notification_menu_item', notification).done(function(html, js) {
-                    this.content.append(html);
+                    this.getNotificationsContainer().append(html);
                     templates.runTemplateJS(js);
                 }.bind(this));
             }.bind(this));
         }
     };
 
-    NotificationMenuController.prototype.loadNotificationCount = function() {
-        notificationRepo.countUnread({useridto: this.root.attr('data-userid')}).then(function(count) {
-            this.unreadCount = count;
-            this.renderUnreadCount();
-        }.bind(this));
-    };
-
     NotificationMenuController.prototype.loadMoreNotifications = function() {
-        if (this.isLoading || this.hasLoadedAllNotifications) {
+        if (this.isLoading || this.hasLoadedAllNotifications()) {
             return $.Deferred().promise.resolve();
         }
 
         this.startLoading();
-
-        var promise = notificationRepo.query({
+        var request = {
             limit: this.limit,
-            offset: this.offset,
-            useridto: this.root.attr('data-userid'),
-        }).then(function(result) {
+            offset: this.getOffset(),
+            useridto: this.userId,
+        };
+
+        if (this.unreadOnlyMode()) {
+            request.status = 'unread';
+        }
+
+        var promise = notificationRepo.query(request).then(function(result) {
             var notifications = result.notifications;
             this.unreadCount = result.unreadcount;
-            this.renderUnreadCount();
-            this.hasLoadedAllNotifications = !notifications.length || notifications.length < this.limit;
+            this.setLoadedAllNotifications(!notifications.length || notifications.length < this.limit);
+            this.getConfig().initialLoad = true;
 
             if (notifications.length) {
                 this.renderNotifications(notifications);
-                this.offset += this.limit;
+                this.incrementOffset();
             }
         }.bind(this))
         .fail(debugNotification.exception)
@@ -137,7 +204,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         }.bind(this));
 
         this.contentContainer.scroll(function(e) {
-             if (!this.isLoading && !this.hasLoadedAllNotifications) {
+             if (!this.isLoading && !this.hasLoadedAllNotifications()) {
                 var scrollTop = this.contentContainer.scrollTop();
                 var innerHeight = this.contentContainer.innerHeight();
                 var scrollHeight = this.contentContainer[0].scrollHeight;
@@ -160,15 +227,19 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             e.preventDefault();
         });
 
-        this.root.find('.fancy-toggle').click(function(e) {
-            var toggle = this.root.find('.fancy-toggle');
-
-            if (toggle.hasClass('on')) {
-                toggle.removeClass('on');
-                toggle.addClass('off');
+        this.modeToggle.click(function(e) {
+            if (this.modeToggle.hasClass('on')) {
+                this.modeToggle.removeClass('on');
+                this.modeToggle.addClass('off');
+                this.root.removeClass('unread-only');
             } else {
-                toggle.removeClass('off');
-                toggle.addClass('on');
+                this.modeToggle.removeClass('off');
+                this.modeToggle.addClass('on');
+                this.root.addClass('unread-only');
+            }
+
+            if (!this.hasDoneInitialLoad()) {
+                this.loadMoreNotifications();
             }
         }.bind(this));
     };

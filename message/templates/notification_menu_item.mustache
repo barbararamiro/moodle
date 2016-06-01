@@ -38,26 +38,30 @@
     {{#contexturl}}
     <a href="{{{.}}}">
     {{/contexturl}}
-        <div class="content-item-header">
-            <h3>{{userfromfullname}}</h3>
-        </div>
-        <div class="content-item-body">
-            <div class="content-body-short">
-                <div class="notification-image">{{#pix}} i/marker {{/pix}}</div>
-                <p class="notification-message">{{subject}}</p>
+        <div class="content-item">
+            <div class="content-item-header">
+                <h3>{{userfromfullname}}</h3>
             </div>
-            <div class="content-body-full">
-                <pre>{{fullmessage}}</pre>
+            <div class="content-item-body">
+                <div class="content-body-short">
+                    <div class="notification-image">{{#pix}} i/marker {{/pix}}</div>
+                    <p class="notification-message">{{subject}}</p>
+                </div>
+                <div class="content-body-full">
+                    <pre>{{fullmessage}}</pre>
+                </div>
+            </div>
+            <div class="content-item-footer">
+                <p>{{timecreatedpretty}}</p>
             </div>
         </div>
         <div class="content-item-controls">
+            <span class="mark-read-button">{{#pix}} t/approve {{/pix}}</span>
+            <span class="block-button">{{#pix}} t/block {{/pix}}</span>
             <div class="expand-buttons">
                 <span class="show-button">{{#pix}} t/sort_desc {{/pix}}</span>
                 <span class="hide-button">{{#pix}} t/sort_asc {{/pix}}</span>
             </div>
-        </div>
-        <div class="content-item-footer">
-            <p>{{timecreatedpretty}}</p>
         </div>
     {{#contexturl}}
     </a>

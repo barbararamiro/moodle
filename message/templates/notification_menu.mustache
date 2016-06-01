@@ -33,7 +33,7 @@
     }
 
 }}
-<div id="nav-notification-menu-container" class="collapsed" data-userid="{{userid}}">
+<div id="nav-notification-menu-container" class="collapsed unread-only" data-userid="{{userid}}">
     <div class="nav-icon">
         {{#pix}} i/publish, core, Toggle notification menu {{/pix}}
         <div class="count-container hidden"></div>
@@ -51,7 +51,10 @@
             </div>
         </div>
         <div class="menu-content-container">
-            <div class="menu-content"></div>
+            <div class="menu-content">
+                <div class="all-notifications"></div>
+                <div class="unread-notifications"></div>
+            </div>
             <div class="loading-icon">{{#pix}} y/loading, core, {{#str}} loading, mod_assign {{/str}} {{/pix}}</div>
         </div>
     </div>
