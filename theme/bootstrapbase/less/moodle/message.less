@@ -597,11 +597,17 @@ table.message .searchresults td {
             }
 
             .menu-content {
-                .all-notifications {
-                    display: block;
-                }
                 .unread-notifications {
-                    display: none;
+                    opacity: 0;
+                    visibility: hidden;
+                    height: 0;
+                    transition: opacity 0.25s, visibility 0s 0.25s, height 0s 0.25s;
+                }
+                .all-notifications {
+                    opacity: 1;
+                    visibility: visible;
+                    height: auto;
+                    transition: opacity 0.25s 0.25s, visibility 0s 0.5s, height 0s 0.5s;
                 }
                 .menu-content-item-container {
                     width: 100%;
@@ -718,9 +724,10 @@ table.message .searchresults td {
                         .expand-buttons {
                             display: inline-block;
                             height: 30px;
-                            width: 30px;
+                            width: 100%;
                             vertical-align: top;
                             float: right;
+                            text-align: center;
 
                             img {
                                 vertical-align: middle;
@@ -769,10 +776,6 @@ table.message .searchresults td {
                         }
                     }
 
-                    &.unread {
-                        background-color: #edf9ff;
-                    }
-
                     &:last-child {
                         border-bottom: none;
                     }
@@ -796,10 +799,16 @@ table.message .searchresults td {
             .menu-content-container {
                 .menu-content {
                     .all-notifications {
-                        display: none;
+                        opacity: 0;
+                        visibility: hidden;
+                        height: 0;
+                        transition: opacity 0.25s, visibility 0s 0.25s, height 0s 0.25s;
                     }
                     .unread-notifications {
-                        display: block;
+                        opacity: 1;
+                        visibility: visible;
+                        height: auto;
+                        transition: opacity 0.25s 0.25s, visibility 0s 0.5s, height 0s 0.5s;
                     }
                 }
             }

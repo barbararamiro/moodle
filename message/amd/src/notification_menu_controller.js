@@ -68,6 +68,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
 
     NotificationMenuController.prototype.closeMenu = function() {
         this.root.addClass('collapsed');
+        this.renderUnreadCount();
     };
 
     NotificationMenuController.prototype.openMenu = function() {
@@ -99,6 +100,10 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         this.getConfig().offset += this.getConfig().limit;
     };
 
+    NotificationMenuController.prototype.resetOffset = function() {
+        this.getConfig().offset = 0;
+    };
+
     NotificationMenuController.prototype.getNotificationsContainer = function() {
         return this.getConfig().container;
     };
@@ -113,6 +118,13 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
 
     NotificationMenuController.prototype.setLoadedAllNotifications = function(val) {
         this.getConfig().loadedAll = val;
+    };
+
+    NotificationMenuController.prototype.clearUnreadNotifications = function() {
+        this.config.unread.offset = 0;
+        this.config.unread.loadedAll = false;
+        this.config.unread.initialLoad = false;
+        this.config.unread.container.empty();
     };
 
     NotificationMenuController.prototype.startLoading = function() {
@@ -229,6 +241,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
 
         this.modeToggle.click(function(e) {
             if (this.modeToggle.hasClass('on')) {
+                this.clearUnreadNotifications();
                 this.modeToggle.removeClass('on');
                 this.modeToggle.addClass('off');
                 this.root.removeClass('unread-only');

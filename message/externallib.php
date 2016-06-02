@@ -854,6 +854,9 @@ class core_message_external extends external_api {
                 'newestfirst' => new external_value(
                     PARAM_BOOL, 'true for ordering by newest first, false for oldest first',
                     VALUE_DEFAULT, true),
+                'markasread' => new external_value(
+                    PARAM_BOOL, 'mark notifications as read when they are returned by this function',
+                    VALUE_DEFAULT, false),
                 'limit' => new external_value(PARAM_INT, 'the number of results to return', VALUE_DEFAULT, 0),
                 'offset' => new external_value(PARAM_INT, 'offset the result set by a given amount', VALUE_DEFAULT, 0)
             )
@@ -870,11 +873,12 @@ class core_message_external extends external_api {
      * @param  int      $useridfrom     the user id who send the message. -10 or -20 for no-reply or support user
      * @param  string   $status         filter the results to only read or unread notifications
      * @param  bool     $newestfirst    true for ordering by newest first, false for oldest first
+     * @param  bool     $markasread     mark notifications as read when they are returned by this function
      * @param  int      $limit          the number of results to return
      * @param  int      $offset         offset the result set by a given amount
      * @return external_description
      */
-    public static function get_notifications($useridto, $useridfrom, $status, $newestfirst, $limit, $offset) {
+    public static function get_notifications($useridto, $useridfrom, $status, $newestfirst, $markasread, $limit, $offset) {
         global $CFG, $USER;
 
         $params = self::validate_parameters(
@@ -884,6 +888,7 @@ class core_message_external extends external_api {
                 'useridfrom' => $useridfrom,
                 'status' => $status,
                 'newestfirst' => $newestfirst,
+                'markasread' => $markasread,
                 'limit' => $limit,
                 'offset' => $offset,
             )
@@ -895,6 +900,7 @@ class core_message_external extends external_api {
         $useridto = $params['useridto'];
         $useridfrom = $params['useridfrom'];
         $newestfirst = $params['newestfirst'];
+        $markasread = $params['markasread'];
         $limit = $params['limit'];
         $offset = $params['offset'];
 
@@ -918,7 +924,7 @@ class core_message_external extends external_api {
         }
 
         $sort = $newestfirst ? 'DESC' : 'ASC';
-        $notifications = message_get_notifications($useridto, $useridfrom, $status, $sort, $limit, $offset);
+        $notifications = message_get_notifications($useridto, $useridfrom, $status, false, true, $sort, $limit, $offset);
 
         if ($notifications) {
             // In some cases, we don't need to get the to/from user objects from the sql query.
@@ -953,10 +959,10 @@ class core_message_external extends external_api {
                     if (core_user::is_real_user($notification->useridfrom)) {
                         $user = new stdClass();
                         $user = username_load_fields_from_object($user, $notification, 'userfrom');
-                        $notification->userfromfullname = fullname($user, $canviewfullname);
+                        $notification->userfromfullname = fullname($user);
                     } else {
                         $user = core_user::get_user($notification->useridfrom);
-                        $notification->userfromfullname = fullname($user, $canviewfullname);
+                        $notification->userfromfullname = fullname($user);
                     }
                 } else {
                     $notification->userfromfullname = $userfromfullname;
@@ -966,7 +972,7 @@ class core_message_external extends external_api {
                 if (empty($usertofullname)) {
                     $user = new stdClass();
                     $user = username_load_fields_from_object($user, $notification, 'userto');
-                    $notification->usertofullname = fullname($user, $canviewfullname);
+                    $notification->usertofullname = fullname($user);
                 } else {
                     $notification->usertofullname = $usertofullname;
                 }
@@ -974,6 +980,10 @@ class core_message_external extends external_api {
                 $notification->timecreatedpretty = get_string('ago', 'message', format_time(time() - $notification->timecreated));
                 $notification->text = message_format_message_text($notification);
                 $notification->read = $notification->timeread ? true : false;
+
+                if ($markasread) {
+                    message_mark_message_read($notification, time());
+                }
             }
         }
 

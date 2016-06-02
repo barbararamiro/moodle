@@ -2817,7 +2817,7 @@ function message_get_messages($useridto, $useridfrom = 0, $notifications = -1, $
     return $messages;
 }
 
-function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '', $sort = 'DESC', $limit = 0, $offset = 0) {
+function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '', $embeduserto = false, $embeduserfrom = false, $sort = 'DESC', $limit = 0, $offset = 0) {
     global $DB;
 
     if (!empty($status) && $status != 'read' && $status != 'unread') {
@@ -2831,13 +2831,14 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
 
     $params = array();
 
-    $buildtablesql = function($table, $prefix, $additionalfields) use ($useridto, $useridfrom) {
+    $buildtablesql = function($table, $prefix, $additionalfields) use ($useridto, $useridfrom, $embeduserto, $embeduserfrom) {
         $params = array();
         $fields = "concat('$prefix', $prefix.id) as id, $prefix.useridfrom, $prefix.useridto,
             $prefix.subject, $prefix.fullmessage, $prefix.fullmessageformat,
             $prefix.fullmessagehtml, $prefix.smallmessage, $prefix.contexturl,
             $prefix.contexturlname, $prefix.timecreated, $prefix.timeuserfromdeleted, $prefix.timeusertodeleted, $additionalfields";
         $where = '';
+        $joinsql = '';
 
         if (empty($useridto)) {
             $where .= " AND $prefix.useridfrom = :{$prefix}useridfrom";
@@ -2852,7 +2853,19 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
             }
         }
 
-        return array(sprintf("SELECT %s FROM %s $prefix WHERE $prefix.notification = 1 %s", $fields, $table, $where), $params);
+        if ($embeduserto) {
+            $embedprefix = "{$prefix}ut";
+            $fields .= ", " . get_all_user_name_fields(true, $embedprefix, '', 'userto');
+            $joinsql .= " LEFT JOIN {user} $embedprefix ON $embedprefix.id = $prefix.useridto";
+        }
+
+        if ($embeduserfrom) {
+            $embedprefix = "{$prefix}uf";
+            $fields .= ", " . get_all_user_name_fields(true, $embedprefix, '', 'userfrom');
+            $joinsql .= " LEFT JOIN {user} $embedprefix ON $embedprefix.id = $prefix.useridfrom";
+        }
+
+        return array(sprintf("SELECT %s FROM %s %s %s WHERE %s.notification = 1 %s", $fields, $table, $prefix, $joinsql, $prefix, $where), $params);
     };
 
     $sql = '';
@@ -2872,7 +2885,7 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
             $params = array_merge($params, $readparams, $unreadparams);
     }
 
-    $sql .= " ORDER BY timecreated $sort, timeread $sort";
+    $sql .= " ORDER BY timecreated $sort, timeread $sort, id $sort";
 
     return array_values($DB->get_records_sql($sql, $params, $offset, $limit));
 }
