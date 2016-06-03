@@ -627,6 +627,14 @@ $functions = array(
         'type' => 'read',
         'ajax' => true,
     ),
+    'core_message_mark_all_notifications_as_read' => array(
+        'classname' => 'core_message_external',
+        'methodname' => 'mark_all_notifications_as_read',
+        'classpath' => 'message/externallib.php',
+        'description' => 'Retrieve the count of unread notifications for a given user',
+        'type' => 'write',
+        'ajax' => true,
+    ),
     'core_message_mark_message_read' => array(
         'classname' => 'core_message_external',
         'methodname' => 'mark_message_read',

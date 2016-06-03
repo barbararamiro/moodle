@@ -58,8 +58,22 @@ define(['core/ajax', 'core/notification'], function(ajax, notification) {
         return promise;
     };
 
+    var markAllAsRead = function(args) {
+        var request = {
+            methodname: 'core_message_mark_all_notifications_as_read',
+            args: args
+        };
+
+        var promise = ajax.call([request])[0];
+
+        promise.fail(notification.exception);
+
+        return promise;
+    };
+
     return {
         query: query,
         countUnread: countUnread,
+        markAllAsRead: markAllAsRead,
     };
 });

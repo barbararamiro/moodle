@@ -25,14 +25,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      3.2
  */
-define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'message/notification_repository'],
-        function($, ajax, templates, str, debugNotification, notificationRepo) {
+define(['jquery', 'theme_bootstrapbase/bootstrap', 'core/ajax', 'core/templates', 'core/str', 'core/notification', 'message/notification_repository'],
+        function($, bootstrap, ajax, templates, str, debugNotification, notificationRepo) {
 
     var NotificationMenuController = function(element) {
         this.root = $(element);
         this.content = this.root.find('.menu-content');
         this.contentContainer = this.root.find('.menu-content-container');
         this.menuToggle = this.root.find('.nav-icon');
+        this.markAllReadButton = this.root.find('#mark-all-read-button');
         this.unreadCount = 0;
         this.isLoading = false;
         this.userId = this.root.attr('data-userid');
@@ -56,6 +57,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
 
         this.registerEventListeners();
         this.loadUnreadNotificationCount();
+        this.root.find('[data-toggle="tooltip"]').tooltip();
     };
 
     NotificationMenuController.prototype.toggleMenu = function() {
@@ -69,6 +71,7 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
     NotificationMenuController.prototype.closeMenu = function() {
         this.root.addClass('collapsed');
         this.renderUnreadCount();
+        this.clearUnreadNotifications();
     };
 
     NotificationMenuController.prototype.openMenu = function() {
@@ -97,7 +100,12 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
     };
 
     NotificationMenuController.prototype.incrementOffset = function() {
-        this.getConfig().offset += this.getConfig().limit;
+        // Only need to increment offset if we're combining read and unread
+        // because all unread messages are marked as read when we retrieve them
+        // which acts as the result set increment for us.
+        if (!this.unreadOnlyMode()) {
+            this.getConfig().offset += this.getConfig().limit;
+        }
     };
 
     NotificationMenuController.prototype.resetOffset = function() {
@@ -159,20 +167,27 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
         }.bind(this));
     };
 
-    NotificationMenuController.prototype.renderNotifications = function(notifications) {
+    NotificationMenuController.prototype.renderNotifications = function(notifications, container) {
+        var promises = [];
+
         if (notifications.length) {
             $.each(notifications, function(index, notification) {
-                templates.render('message/notification_menu_item', notification).done(function(html, js) {
-                    this.getNotificationsContainer().append(html);
+                var promise = templates.render('message/notification_menu_item', notification);
+                promise.then(function(html, js) {
+                    container.append(html);
                     templates.runTemplateJS(js);
                 }.bind(this));
+
+                promises.push(promise);
             }.bind(this));
         }
+
+        return $.when.apply($.when, promises);
     };
 
     NotificationMenuController.prototype.loadMoreNotifications = function() {
         if (this.isLoading || this.hasLoadedAllNotifications()) {
-            return $.Deferred().promise.resolve();
+            return $.Deferred().resolve();
         }
 
         this.startLoading();
@@ -180,12 +195,14 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             limit: this.limit,
             offset: this.getOffset(),
             useridto: this.userId,
+            markasread: true,
         };
 
         if (this.unreadOnlyMode()) {
             request.status = 'unread';
         }
 
+        var container = this.getNotificationsContainer();
         var promise = notificationRepo.query(request).then(function(result) {
             var notifications = result.notifications;
             this.unreadCount = result.unreadcount;
@@ -193,14 +210,24 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             this.getConfig().initialLoad = true;
 
             if (notifications.length) {
-                this.renderNotifications(notifications);
                 this.incrementOffset();
+                return this.renderNotifications(notifications, container);
             }
         }.bind(this))
-        .fail(debugNotification.exception)
         .always(function() { this.stopLoading() }.bind(this));
 
         return promise;
+    };
+
+    NotificationMenuController.prototype.markAllAsRead = function() {
+        this.markAllReadButton.addClass('loading');
+
+        return notificationRepo.markAllAsRead({useridto: this.userId})
+            .then(function() {
+                this.unreadCount = 0;
+                this.clearUnreadNotifications();
+            }.bind(this))
+            .always(function() { this.markAllReadButton.removeClass('loading') }.bind(this));
     };
 
     NotificationMenuController.prototype.registerEventListeners = function() {
@@ -254,6 +281,10 @@ define(['jquery', 'core/ajax', 'core/templates', 'core/str', 'core/notification'
             if (!this.hasDoneInitialLoad()) {
                 this.loadMoreNotifications();
             }
+        }.bind(this));
+
+        this.markAllReadButton.click(function(e) {
+            this.markAllAsRead();
         }.bind(this));
     };
 

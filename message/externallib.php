@@ -982,7 +982,8 @@ class core_message_external extends external_api {
                 $notification->read = $notification->timeread ? true : false;
 
                 if ($markasread) {
-                    message_mark_message_read($notification, time());
+                    // Have to clone here because this function mutates the given data. Naughty, naughty...
+                    message_mark_message_read(clone $notification, time());
                 }
             }
         }
@@ -1005,7 +1006,7 @@ class core_message_external extends external_api {
                 'notifications' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'id' => new external_value(PARAM_TEXT, 'notification id'),
+                            'id' => new external_value(PARAM_INT, 'Notification id (this is not guaranteed to be unique within this result set)'),
                             'useridfrom' => new external_value(PARAM_INT, 'User from id'),
                             'useridto' => new external_value(PARAM_INT, 'User to id'),
                             'subject' => new external_value(PARAM_TEXT, 'The notification subject'),
@@ -1029,6 +1030,85 @@ class core_message_external extends external_api {
                 'unreadcount' => new external_value(PARAM_INT, 'the user whose blocked users we want to retrieve'),
             )
         );
+    }
+
+    /**
+     * Mark all notifications as read parameters description.
+     *
+     * @return external_function_parameters
+     * @since 3.2
+     */
+    public static function mark_all_notifications_as_read_parameters() {
+        return new external_function_parameters(
+            array(
+                'useridto' => new external_value(PARAM_INT, 'the user id who received the message, 0 for any user', VALUE_REQUIRED),
+                'useridfrom' => new external_value(
+                    PARAM_INT, 'the user id who send the message, 0 for any user. -10 or -20 for no-reply or support user',
+                    VALUE_DEFAULT, 0),
+            )
+        );
+    }
+
+    /**
+     * Mark all notifications as read function.
+     *
+     * @since  3.2
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @param  int      $useridto       the user id who received the message
+     * @param  int      $useridfrom     the user id who send the message. -10 or -20 for no-reply or support user
+     * @return external_description
+     */
+    public static function mark_all_notifications_as_read($useridto, $useridfrom) {
+        global $CFG, $USER;
+
+        $params = self::validate_parameters(
+            self::mark_all_notifications_as_read_parameters(),
+            array(
+                'useridto' => $useridto,
+                'useridfrom' => $useridfrom,
+            )
+        );
+
+        $context = context_system::instance();
+        self::validate_context($context);
+
+        $useridto = $params['useridto'];
+        $useridfrom = $params['useridfrom'];
+
+        if (!empty($useridto)) {
+            if (core_user::is_real_user($useridto)) {
+                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+            } else {
+                throw new moodle_exception('invaliduser');
+            }
+        }
+
+        if (!empty($useridfrom)) {
+            // We use get_user here because the from user can be the noreply or support user.
+            $userfrom = core_user::get_user($useridfrom, '*', MUST_EXIST);
+        }
+
+        // Check if the current user is the sender/receiver or just a privileged user.
+        if ($useridto != $USER->id and $useridfrom != $USER->id and
+            // deleteanymessage seems more reasonable here than readallmessages.
+             !has_capability('moodle/site:deleteanymessage', $context)) {
+            throw new moodle_exception('accessdenied', 'admin');
+        }
+
+        message_mark_all_read_for_user($useridto, $useridfrom, 'notification');
+
+        return true;
+    }
+
+    /**
+     * Mark all notifications as read return description.
+     *
+     * @return external_single_structure
+     * @since 3.2
+     */
+    public static function mark_all_notifications_as_read_returns() {
+        return new external_value(PARAM_BOOL, 'True if the messages were marked read, false otherwise');
     }
 
     /**

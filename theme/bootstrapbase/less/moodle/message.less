@@ -576,6 +576,26 @@ table.message .searchresults td {
                     }
                 }
             }
+
+            #mark-all-read-button {
+                .normal-icon {
+                    display: inline-block;
+                }
+                .loading-icon {
+                    display: none;
+                    height: 12px;
+                    width: 12px;
+                }
+
+                &.loading {
+                    .normal-icon {
+                        display: none;
+                    }
+                    .loading-icon {
+                        display: inline-block;
+                    }
+                }
+            }
         }
 
         .menu-content-container {
@@ -589,10 +609,23 @@ table.message .searchresults td {
                 padding: 5px;
                 box-sizing: border-box;
             }
+            .empty-message {
+                display: none;
+                text-align: center;
+                padding: 10px;
+            }
 
             &.loading {
                 .loading-icon {
                     display: block;
+                }
+
+                .menu-content {
+                    .unread-notifications, .all-notifications {
+                        &:empty + .empty-message, & + .empty-message {
+                            display: none;
+                        }
+                    }
                 }
             }
 
@@ -601,13 +634,23 @@ table.message .searchresults td {
                     opacity: 0;
                     visibility: hidden;
                     height: 0;
+                    overflow: hidden;
                     transition: opacity 0.25s, visibility 0s 0.25s, height 0s 0.25s;
+
+                    & + .empty-message {
+                        display: none;
+                    }
                 }
                 .all-notifications {
                     opacity: 1;
                     visibility: visible;
                     height: auto;
+                    overflow: hidden;
                     transition: opacity 0.25s 0.25s, visibility 0s 0.5s, height 0s 0.5s;
+
+                    &:empty + .empty-message {
+                        display: block;
+                    }
                 }
                 .menu-content-item-container {
                     width: 100%;
@@ -753,6 +796,7 @@ table.message .searchresults td {
                                     opacity: 0;
                                     visibility: hidden;
                                     max-height: 0;
+                                    overflow: hidden;
                                     transition: opacity 0s 0.25s, visibility 0s 0.25s, max-height 0.25s;
                                 }
                                 .content-body-full {
@@ -803,12 +847,30 @@ table.message .searchresults td {
                         visibility: hidden;
                         height: 0;
                         transition: opacity 0.25s, visibility 0s 0.25s, height 0s 0.25s;
+
+                        & + .empty-message {
+                            display: none;
+                        }
                     }
                     .unread-notifications {
                         opacity: 1;
                         visibility: visible;
                         height: auto;
                         transition: opacity 0.25s 0.25s, visibility 0s 0.5s, height 0s 0.5s;
+
+                        &:empty + .empty-message {
+                            display: block;
+                        }
+                    }
+                }
+
+                &.loading {
+                    .menu-content {
+                        .unread-notifications, .all-notifications {
+                            &:empty + .empty-message, & + .empty-message {
+                                display: none;
+                            }
+                        }
                     }
                 }
             }

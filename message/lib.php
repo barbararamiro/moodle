@@ -2514,10 +2514,42 @@ function message_move_userfrom_unread2read($userid) {
  * @return void
  */
 function message_mark_messages_read($touserid, $fromuserid) {
+    return message_mark_all_read_for_user($touserid, $fromuserid);
+}
+
+/**
+ * marks ALL messages being sent from $fromuserid to $touserid as read. Can
+ * be filtered by type.
+ *
+ * @param int $touserid the id of the message recipient
+ * @param int $fromuserid the id of the message sender
+ * @param string $type filter the messages by type, either notification, message or '' for all.
+ * @return void
+ */
+function message_mark_all_read_for_user($touserid, $fromuserid, $type = '') {
     global $DB;
 
-    $sql = 'SELECT m.* FROM {message} m WHERE m.useridto=:useridto AND m.useridfrom=:useridfrom';
-    $messages = $DB->get_recordset_sql($sql, array('useridto' => $touserid,'useridfrom' => $fromuserid));
+    $params = array();
+    $where = '';
+
+    if (!empty($touserid)) {
+        $params['useridto'] = $touserid;
+    }
+
+    if (!empty($fromuserid)) {
+        $params['useridfrom'] = $fromuserid;
+    }
+
+    if (!empty($type)) {
+        if (strtolower($type) == 'notification') {
+            $params['notification'] = 1;
+        } else if (strtolower($type) == 'message') {
+            $params['notification'] = 0;
+        }
+    }
+
+    $sql = sprintf('SELECT m.* FROM {message} m WHERE m.%s = ?', implode('= ? AND m.', array_keys($params)));
+    $messages = $DB->get_recordset_sql($sql, array_values($params));
 
     foreach ($messages as $message) {
         message_mark_message_read($message, time());
@@ -2833,9 +2865,9 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
 
     $buildtablesql = function($table, $prefix, $additionalfields) use ($useridto, $useridfrom, $embeduserto, $embeduserfrom) {
         $params = array();
-        $fields = "concat('$prefix', $prefix.id) as id, $prefix.useridfrom, $prefix.useridto,
+        $fields = "concat('$prefix', $prefix.id) as uniqueid, $prefix.id, $prefix.useridfrom, $prefix.useridto,
             $prefix.subject, $prefix.fullmessage, $prefix.fullmessageformat,
-            $prefix.fullmessagehtml, $prefix.smallmessage, $prefix.contexturl,
+            $prefix.fullmessagehtml, $prefix.smallmessage, $prefix.notification, $prefix.contexturl,
             $prefix.contexturlname, $prefix.timecreated, $prefix.timeuserfromdeleted, $prefix.timeusertodeleted, $additionalfields";
         $where = '';
         $joinsql = '';
