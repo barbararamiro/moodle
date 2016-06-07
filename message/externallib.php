@@ -851,6 +851,12 @@ class core_message_external extends external_api {
                 'status' => new external_value(
                     PARAM_ALPHA, 'filter the results to just "read" or "unread" notifications',
                     VALUE_DEFAULT, ''),
+                'embeduserto' => new external_value(
+                    PARAM_BOOL, 'true for returning user details for the recipient in each notification',
+                    VALUE_DEFAULT, false),
+                'embeduserfrom' => new external_value(
+                    PARAM_BOOL, 'true for returning user details for the sender in each notification',
+                    VALUE_DEFAULT, false),
                 'newestfirst' => new external_value(
                     PARAM_BOOL, 'true for ordering by newest first, false for oldest first',
                     VALUE_DEFAULT, true),
@@ -872,13 +878,15 @@ class core_message_external extends external_api {
      * @param  int      $useridto       the user id who received the message
      * @param  int      $useridfrom     the user id who send the message. -10 or -20 for no-reply or support user
      * @param  string   $status         filter the results to only read or unread notifications
+     * @param  bool     $embeduserto    true to embed the recipient user details in the record for each notification
+     * @param  bool     $embeduserfrom  true to embed the send user details in the record for each notification
      * @param  bool     $newestfirst    true for ordering by newest first, false for oldest first
      * @param  bool     $markasread     mark notifications as read when they are returned by this function
      * @param  int      $limit          the number of results to return
      * @param  int      $offset         offset the result set by a given amount
      * @return external_description
      */
-    public static function get_notifications($useridto, $useridfrom, $status, $newestfirst, $markasread, $limit, $offset) {
+    public static function get_notifications($useridto, $useridfrom, $status, $embeduserto, $embeduserfrom, $newestfirst, $markasread, $limit, $offset) {
         global $CFG, $USER;
 
         $params = self::validate_parameters(
@@ -887,6 +895,8 @@ class core_message_external extends external_api {
                 'useridto' => $useridto,
                 'useridfrom' => $useridfrom,
                 'status' => $status,
+                'embeduserto' => $embeduserto,
+                'embeduserfrom' => $embeduserfrom,
                 'newestfirst' => $newestfirst,
                 'markasread' => $markasread,
                 'limit' => $limit,
@@ -899,6 +909,9 @@ class core_message_external extends external_api {
 
         $useridto = $params['useridto'];
         $useridfrom = $params['useridfrom'];
+        $status = $params['status'];
+        $embeduserto = $params['embeduserto'];
+        $embeduserfrom = $params['embeduserfrom'];
         $newestfirst = $params['newestfirst'];
         $markasread = $params['markasread'];
         $limit = $params['limit'];
@@ -906,13 +919,15 @@ class core_message_external extends external_api {
 
         if (!empty($useridto)) {
             if (core_user::is_real_user($useridto)) {
-                $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+                if ($embeduserto) {
+                    $userto = core_user::get_user($useridto, '*', MUST_EXIST);
+                }
             } else {
                 throw new moodle_exception('invaliduser');
             }
         }
 
-        if (!empty($useridfrom)) {
+        if (!empty($useridfrom) && $embeduserfrom) {
             // We use get_user here because the from user can be the noreply or support user.
             $userfrom = core_user::get_user($useridfrom, '*', MUST_EXIST);
         }
@@ -924,7 +939,7 @@ class core_message_external extends external_api {
         }
 
         $sort = $newestfirst ? 'DESC' : 'ASC';
-        $notifications = message_get_notifications($useridto, $useridfrom, $status, false, true, $sort, $limit, $offset);
+        $notifications = message_get_notifications($useridto, $useridfrom, $status, $embeduserto, $embeduserfrom, $sort, $limit, $offset);
 
         if ($notifications) {
             // In some cases, we don't need to get the to/from user objects from the sql query.
@@ -932,13 +947,13 @@ class core_message_external extends external_api {
             $usertofullname = '';
 
             // In this case, the useridto field is not empty, so we can get the user destinatary fullname from there.
-            if (!empty($useridto)) {
+            if (!empty($useridto) && $embeduserto) {
                 $usertofullname = fullname($userto);
                 // The user from may or may not be filled.
-                if (!empty($useridfrom)) {
+                if (!empty($useridfrom) && $embeduserfrom) {
                     $userfromfullname = fullname($userfrom);
                 }
-            } else {
+            } else if (!empty($useridfrom) && $embeduserfrom) {
                 // If the useridto field is empty, the useridfrom must be filled.
                 $userfromfullname = fullname($userfrom);
             }
@@ -954,34 +969,38 @@ class core_message_external extends external_api {
                 }
 
                 // We need to get the user from the query.
-                if (empty($userfromfullname)) {
-                    // Check for non-reply and support users.
-                    if (core_user::is_real_user($notification->useridfrom)) {
-                        $user = new stdClass();
-                        $user = username_load_fields_from_object($user, $notification, 'userfrom');
-                        $notification->userfromfullname = fullname($user);
+                if ($embeduserfrom) {
+                    if (empty($userfromfullname)) {
+                        // Check for non-reply and support users.
+                        if (core_user::is_real_user($notification->useridfrom)) {
+                            $user = new stdClass();
+                            $user = username_load_fields_from_object($user, $notification, 'userfrom');
+                            $notification->userfromfullname = fullname($user);
+                        } else {
+                            $user = core_user::get_user($notification->useridfrom);
+                            $notification->userfromfullname = fullname($user);
+                        }
                     } else {
-                        $user = core_user::get_user($notification->useridfrom);
-                        $notification->userfromfullname = fullname($user);
+                        $notification->userfromfullname = $userfromfullname;
                     }
-                } else {
-                    $notification->userfromfullname = $userfromfullname;
                 }
 
                 // We need to get the user from the query.
-                if (empty($usertofullname)) {
-                    $user = new stdClass();
-                    $user = username_load_fields_from_object($user, $notification, 'userto');
-                    $notification->usertofullname = fullname($user);
-                } else {
-                    $notification->usertofullname = $usertofullname;
+                if ($embeduserto) {
+                    if (empty($usertofullname)) {
+                        $user = new stdClass();
+                        $user = username_load_fields_from_object($user, $notification, 'userto');
+                        $notification->usertofullname = fullname($user);
+                    } else {
+                        $notification->usertofullname = $usertofullname;
+                    }
                 }
 
                 $notification->timecreatedpretty = get_string('ago', 'message', format_time(time() - $notification->timecreated));
                 $notification->text = message_format_message_text($notification);
                 $notification->read = $notification->timeread ? true : false;
 
-                if ($markasread) {
+                if ($markasread && !$notification->read) {
                     // Have to clone here because this function mutates the given data. Naughty, naughty...
                     message_mark_message_read(clone $notification, time());
                 }
@@ -1020,8 +1039,8 @@ class core_message_external extends external_api {
                             'timecreated' => new external_value(PARAM_INT, 'Time created'),
                             'timecreatedpretty' => new external_value(PARAM_TEXT, 'Time created in a pretty format'),
                             'timeread' => new external_value(PARAM_INT, 'Time read'),
-                            'usertofullname' => new external_value(PARAM_TEXT, 'User to full name'),
-                            'userfromfullname' => new external_value(PARAM_TEXT, 'User from full name'),
+                            'usertofullname' => new external_value(PARAM_TEXT, 'User to full name', VALUE_OPTIONAL),
+                            'userfromfullname' => new external_value(PARAM_TEXT, 'User from full name', VALUE_OPTIONAL),
                             'read' => new external_value(PARAM_BOOL, 'notification read status'),
                             'deleted' => new external_value(PARAM_BOOL, 'notification deletion status'),
                         ), 'message'

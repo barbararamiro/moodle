@@ -196,6 +196,8 @@ define(['jquery', 'theme_bootstrapbase/bootstrap', 'core/ajax', 'core/templates'
             offset: this.getOffset(),
             useridto: this.userId,
             markasread: true,
+            embeduserto: false,
+            embeduserfrom: true,
         };
 
         if (this.unreadOnlyMode()) {
