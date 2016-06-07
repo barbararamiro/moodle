@@ -47,6 +47,12 @@ define('MESSAGE_SEARCH_MAX_RESULTS', 200);
 define('MESSAGE_CONTACTS_PER_PAGE',10);
 define('MESSAGE_MAX_COURSE_NAME_LENGTH', 30);
 
+define('MESSAGE_UNREAD','unread');
+define('MESSAGE_READ','read');
+define('MESSAGE_TYPE_NOTIFICATION','notification');
+define('MESSAGE_TYPE_MESSAGE','message');
+
+
 /**
  * Define contants for messaging default settings population. For unambiguity of
  * plugin developer intentions we use 4-bit value (LSB numbering):
@@ -2523,10 +2529,10 @@ function message_mark_messages_read($touserid, $fromuserid) {
  *
  * @param int $touserid the id of the message recipient
  * @param int $fromuserid the id of the message sender
- * @param string $type filter the messages by type, either notification, message or '' for all.
+ * @param string $type filter the messages by type, either MESSAGE_TYPE_NOTIFICATION, MESSAGE_TYPE_MESSAGE or '' for all.
  * @return void
  */
-function message_mark_all_read_for_user($touserid, $fromuserid, $type = '') {
+function message_mark_all_read_for_user($touserid, $fromuserid = 0, $type = '') {
     global $DB;
 
     $params = array();
@@ -2541,9 +2547,9 @@ function message_mark_all_read_for_user($touserid, $fromuserid, $type = '') {
     }
 
     if (!empty($type)) {
-        if (strtolower($type) == 'notification') {
+        if (strtolower($type) == MESSAGE_TYPE_NOTIFICATION) {
             $params['notification'] = 1;
-        } else if (strtolower($type) == 'message') {
+        } else if (strtolower($type) == MESSAGE_TYPE_MESSAGE) {
             $params['notification'] = 0;
         }
     }
@@ -2849,11 +2855,27 @@ function message_get_messages($useridto, $useridfrom = 0, $notifications = -1, $
     return $messages;
 }
 
-function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '', $embeduserto = false, $embeduserfrom = false, $sort = 'DESC', $limit = 0, $offset = 0) {
+/**
+ * Get notifications to and from the specified users.
+ *
+ * @param  int      $useridto       the user id who received the notification
+ * @param  int      $useridfrom     the user id who sent the notification. -10 or -20 for no-reply or support user
+ * @param  bool     $status         MESSAGE_READ for retrieving read notifications, MESSAGE_UNREAD for unread, empty for both
+ * @param  string   $sort           the column name to order by including optionally direction
+ * @param  bool     $embeduserto    embed the to user details in the notification response
+ * @param  bool     $embeduserfrom  embed the from user details in the notification response
+ * @param  int      $limit          limit the number of result returned
+ * @param  int      $offset         offset the result set by this amount
+ * @return array                    array of notification records
+ * @since  3.1
+ */
+function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
+    $embeduserto = false, $embeduserfrom = false, $sort = 'DESC', $limit = 0, $offset = 0) {
     global $DB;
 
-    if (!empty($status) && $status != 'read' && $status != 'unread') {
-        throw new moodle_exception('invalid parameter: status: must be "read" or "unread"');
+    if (!empty($status) && $status != MESSAGE_READ && $status != MESSAGE_UNREAD) {
+        throw new moodle_exception(sprintf('invalid parameter: status: must be "%s" or "%s"',
+            MESSAGE_READ, MESSAGE_UNREAD));
     }
 
     $sort = strtoupper($sort);
@@ -2902,11 +2924,11 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
 
     $sql = '';
     switch ($status) {
-        case 'read':
+        case MESSAGE_READ:
             list($sql, $readparams) = $buildtablesql('{message_read}', 'r', 'r.timeread');
             $params = array_merge($params, $readparams);
             break;
-        case 'unread':
+        case MESSAGE_UNREAD:
             list($sql, $unreadparams) = $buildtablesql('{message}', 'u', '0 as timeread');
             $params = array_merge($params, $unreadparams);
             break;
@@ -2922,6 +2944,14 @@ function message_get_notifications($useridto = 0, $useridfrom = 0, $status = '',
     return array_values($DB->get_records_sql($sql, $params, $offset, $limit));
 }
 
+/**
+ * Count the unread notifications for a user.
+ *
+ * @param  int      $useridto       the user id who received the notification
+ * @param  int      $useridfrom     the user id who sent the notification. -10 or -20 for no-reply or support user
+ * @return int                      count of the unread notifications
+ * @since  3.1
+ */
 function message_count_unread_notifications($useridto = 0, $useridfrom = 0) {
     global $USER, $DB;
 
