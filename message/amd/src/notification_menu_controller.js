@@ -41,7 +41,7 @@ define(['jquery', 'theme_bootstrapbase/bootstrap', 'core/ajax', 'core/templates'
         this.config = {
             unread: {
                 container: this.content.find('.unread-notifications'),
-                limit: 20,
+                limit: 6,
                 offset: 0,
                 loadedAll: false,
                 initialLoad: false,

@@ -972,4 +972,120 @@ class core_message_externallib_testcase extends externallib_advanced_testcase {
         $this->assertEquals($result['notifications'][0]->id, $notificationids[5]);
         $this->assertEquals($result['notifications'][1]->id, $notificationids[4]);
     }
+
+    public function test_mark_all_notifications_as_read_invalid_user_exception() {
+        $this->resetAfterTest(true);
+
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::mark_all_notifications_as_read(-2132131, 0);
+    }
+
+    public function test_mark_all_notifications_as_read_access_denied_exception() {
+        $this->resetAfterTest(true);
+
+        $sender = $this->getDataGenerator()->create_user();
+        $user = $this->getDataGenerator()->create_user();
+
+        $this->setUser($user);
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::mark_all_notifications_as_read($sender->id, 0);
+    }
+
+    public function test_mark_all_notifications_as_read_missing_from_user_exception() {
+        $this->resetAfterTest(true);
+
+        $sender = $this->getDataGenerator()->create_user();
+
+        $this->setUser($sender);
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::mark_all_notifications_as_read($sender->id, 99999);
+    }
+
+    public function test_mark_all_notifications_as_read() {
+        $this->resetAfterTest(true);
+
+        $sender1 = $this->getDataGenerator()->create_user();
+        $sender2 = $this->getDataGenerator()->create_user();
+        $sender3 = $this->getDataGenerator()->create_user();
+        $recipient = $this->getDataGenerator()->create_user();
+
+        $this->setUser($recipient);
+
+        $notificationids = array(
+            $this->send_fake_unread_notification($sender1, $recipient, 'Notification', 1),
+            $this->send_fake_unread_notification($sender1, $recipient, 'Notification', 2),
+            $this->send_fake_unread_notification($sender2, $recipient, 'Notification', 3),
+            $this->send_fake_unread_notification($sender2, $recipient, 'Notification', 4),
+            $this->send_fake_unread_notification($sender3, $recipient, 'Notification', 5),
+            $this->send_fake_unread_notification($sender3, $recipient, 'Notification', 6),
+        );
+
+        core_message_external::mark_all_notifications_as_read($recipient->id, $sender1->id);
+        $readresult = core_message_external::get_notifications($recipient->id, 0, 'read', false, false, true, false, 0, 0);
+        $unreadresult = core_message_external::get_notifications($recipient->id, 0, 'unread', false, false, true, false, 0, 0);
+
+        $this->assertCount(2, $readresult['notifications']);
+        $this->assertCount(4, $unreadresult['notifications']);
+
+        core_message_external::mark_all_notifications_as_read($recipient->id, 0);
+        $readresult = core_message_external::get_notifications($recipient->id, 0, 'read', false, false, true, false, 0, 0);
+        $unreadresult = core_message_external::get_notifications($recipient->id, 0, 'unread', false, false, true, false, 0, 0);
+
+        $this->assertCount(6, $readresult['notifications']);
+        $this->assertCount(0, $unreadresult['notifications']);
+    }
+
+    public function test_get_unread_notification_count_invalid_user_exception() {
+        $this->resetAfterTest(true);
+
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::get_unread_notification_count(-2132131, 0);
+    }
+
+    public function test_get_unread_notification_count_access_denied_exception() {
+        $this->resetAfterTest(true);
+
+        $sender = $this->getDataGenerator()->create_user();
+        $user = $this->getDataGenerator()->create_user();
+
+        $this->setUser($user);
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::get_unread_notification_count($sender->id, 0);
+    }
+
+    public function test_get_unread_notification_count_missing_from_user_exception() {
+        $this->resetAfterTest(true);
+
+        $sender = $this->getDataGenerator()->create_user();
+
+        $this->setUser($sender);
+        $this->setExpectedException('moodle_exception');
+        $result = core_message_external::get_unread_notification_count($sender->id, 99999);
+    }
+
+    public function test_get_unread_notification_count() {
+        $this->resetAfterTest(true);
+
+        $sender1 = $this->getDataGenerator()->create_user();
+        $sender2 = $this->getDataGenerator()->create_user();
+        $sender3 = $this->getDataGenerator()->create_user();
+        $recipient = $this->getDataGenerator()->create_user();
+
+        $this->setUser($recipient);
+
+        $notificationids = array(
+            $this->send_fake_unread_notification($sender1, $recipient, 'Notification', 1),
+            $this->send_fake_unread_notification($sender1, $recipient, 'Notification', 2),
+            $this->send_fake_unread_notification($sender2, $recipient, 'Notification', 3),
+            $this->send_fake_unread_notification($sender2, $recipient, 'Notification', 4),
+            $this->send_fake_unread_notification($sender3, $recipient, 'Notification', 5),
+            $this->send_fake_unread_notification($sender3, $recipient, 'Notification', 6),
+        );
+
+        $count = core_message_external::get_unread_notification_count($recipient->id, $sender1->id);
+        $this->assertEquals($count, 2);
+
+        $count = core_message_external::get_unread_notification_count($recipient->id, 0);
+        $this->assertEquals($count, 6);
+    }
 }
