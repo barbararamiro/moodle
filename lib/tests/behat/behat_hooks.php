@@ -312,11 +312,15 @@ class behat_hooks extends behat_base {
             $behatselectorclass = 'behat_selectors';
             if ($suitename !== 'default') {
                 $behatselectorclass = behat_config_util::get_behat_theme_selector_override_classname($suitename, true);
+
+                // If no overrides then set default behat selectors.
+                if (!class_exists($behatselectorclass)) {
+                    $behatselectorclass = 'behat_selectors';
+                }
             }
-            if (class_exists($behatselectorclass)) {
-                $behatselectorclass = new $behatselectorclass();
-                $behatselectorclass::register_moodle_selectors($session);
-            }
+
+            $behatselectorclass = new $behatselectorclass();
+            $behatselectorclass::register_moodle_selectors($session);
         }
 
         // Reset mink session between the scenarios.
