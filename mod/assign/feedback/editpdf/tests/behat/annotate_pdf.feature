@@ -51,7 +51,6 @@ Feature: In an assignment, teacher can annotate PDF files during grading
     And I follow "Course 1"
     And I follow "Test assignment name"
     And I follow "View all submissions"
-    And I pause
     And I click on "Edit" "link" in the "Submitted for grading" "table_row"
     And I click on "Grade" "link" in the "Submitted for grading" "table_row"
     And I should see "Page 1 of 3"
