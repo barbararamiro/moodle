@@ -39,31 +39,35 @@
         }
     }
 }}
-<li class="list-group-item" data-region="event-list-item">
+<li class="list-group-item event-list-item" data-region="event-list-item">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-8 p-x-0">
-                <div class="media">
-                    <div class="media-left media-middle">
-                        {{#icon}}{{#pix}} {{key}}, {{component}}, {{alttext}} {{/pix}}{{/icon}}
-                    </div>
-                    <div class="media-body">
-                        <p class="m-b-0"><a href="{{{url}}}">{{name}}</a></p>
-                        <p class="text-muted m-b-0">{{course.fullname}}</p>
-                    </div>
+            <div class="col-xs-8">
+                <div class="d-inline-block icon-large event-icon">
+                    {{#icon}}{{#pix}} {{key}}, {{component}}, {{alttext}} {{/pix}}{{/icon}}
+                </div>
+                <div class="d-inline-block event-name-container">
+                    <a class="event-name text-truncate" href="{{{url}}}">{{name}}</a>
+                    <p class="text-muted text-truncate m-b-0">{{course.fullname}}</p>
                 </div>
             </div>
-            <div class="col-xs-2 text-xs-right hidden-sm-down">{{enddate}}</div>
-            <div class="col-xs-2 text-xs-right hidden-sm-down">
-                {{#action.actionable}}
-                    <a href="{{{action.url}}}">{{action.name}}</a>
-                    {{#action.itemcount}}
-                        <span class="tag tag-pill tag-default">{{.}}</span>
-                    {{/action.itemcount}}
-                {{/action.actionable}}
-                {{^action.actionable}}
-                    <div class="text-muted">{{action.name}}</div>
-                {{/action.actionable}}
+            <div class="col-xs-4 hidden-sm-down">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-5 align-middle">{{enddate}}</div>
+                        <div class="col-xs-7 align-middle">
+                            {{#action.actionable}}
+                                <a class="m-r-1" href="{{{action.url}}}">{{action.name}}</a>
+                                {{#action.itemcount}}
+                                    <span class="tag tag-pill tag-default pull-xs-right">{{.}}</span>
+                                {{/action.itemcount}}
+                            {{/action.actionable}}
+                            {{^action.actionable}}
+                                <div class="text-muted">{{action.name}}</div>
+                            {{/action.actionable}}
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="d-block text-xs-right hidden-md-up">{{enddate}}</div>
         </div>
