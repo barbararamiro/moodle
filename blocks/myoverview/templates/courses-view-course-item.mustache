@@ -28,24 +28,23 @@
         "summary": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
     }
 }}
-<div class="list-group-item col-md-4 m-b-1">
-    <div class="d-inline-block">
-        <div class="d-inline-block m-x-1">
-            <div class="course-info-container" id="course-info-container-{{id}}">
-                <div class="row m-b-1">
-                    <div class="col-md-6">
-                        {{> block_myoverview/progress-chart}}
-                    </div>
-                    <div class="col-md-6">
-                        <h3 class="align-text-bottom"><a href="{{viewurl}}">{{shortname}}</a></h3>
+
+<div class="col-xl-6">
+    <div class="card card-block">
+        <div class="course-info-container" id="course-info-container-{{id}}">
+            <div class="media m-b-1">
+                <div class="media-left">
+                    <div class="media-object">  
+                        {{> block_myoverview/progress-chart }}
                     </div>
                 </div>
-                <div class="row text-muted m-b-1">
-                    {{startdate}} - {{enddate}}
+                <div class="media-body">
+                    <h3 class="align-text-bottom"><a href="{{viewurl}}">{{shortname}}</a></h3>
                 </div>
-                <div class="row text-muted">
-                    {{{summary}}}
-                </div>
+            </div>
+            <div class="card-text">
+                <p>{{startdate}} - {{enddate}}</p>
+                <p>{{{summary}}}</p>
             </div>
         </div>
     </div>
