@@ -29,7 +29,9 @@
      data-last-id="{{$lastid}}{{/lastid}}"
      id="event-list-container-{{$courseid}}{{/courseid}}">
 
-    <div data-region="event-list-content">
+    <div data-region="event-list-content"
+         class="m-t-1">
+         
         {{< block_myoverview/event-list-group }}
             {{$title}}{{#str}} today {{/str}}{{/title}}
             {{$startday}}0{{/startday}}
