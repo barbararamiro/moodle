@@ -17,17 +17,19 @@
 {{!
     @template block_myoverview/event-list-item
 
-    This template renders an event list item for the myoverview block.
+    This template renders an event list item for the myoverview block
+    in the courses view.
 
     Example context (json):
     {
-        "actionname": "Submit assignment",
-        "actionurl": "https://www.google.com",
         "enddate": "Nov 4th, 10am",
-        "contextname": "Assignment due 1",
-        "contexturl": "https://www.google.com",
-        "coursename": "Course 1",
-        "itemcount": 1,
+        "name": "Assignment due 1",
+        "url": "https://www.google.com",
+        "action": {
+            "name": "Submit assignment",
+            "url": "https://www.google.com",
+            "itemcount": 1
+        },
         "icon": {
             "key": "icon",
             "component": "mod_assign",
@@ -35,30 +37,55 @@
         }
     }
 }}
-<li class="list-group-item" data-region="event-list-item">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            {{#itemcount}}
-                <div class="pull-xs-right visible-desktop m-l-1">
-                    <span class="tag tag-pill tag-default">{{.}}</span>
-                </div>
-            {{/itemcount}}
-            <div class="d-inline-block pull-xs-right m-l-1"><a class="visible-desktop" href="{{{actionurl}}}">{{actionname}}</a></div>
-            <div class="d-inline-block pull-xs-right"><div class="visible-desktop">{{enddate}}</div></div>
-            <div class="d-inline-block">
+<li class="list-group-item event-list-item" data-region="event-list-item">
+    <div class="row-fluid visible-desktop">
+        <div class="span7">
+            <div class="d-inline-block event-icon">
                 {{#icon}}{{#pix}} {{key}}, {{component}}, {{alttext}} {{/pix}}{{/icon}}
             </div>
-            <div class="d-inline-block m-l-1">
-                <div class="container-fluid">
-                    <div class="row-fluid">
-                        <a href="{{{contexturl}}}">{{contextname}}</a>
-                    </div>
-                    <div class="row-fluid text-muted">
-                        {{coursename}}
-                    </div>
+            <div class="d-inline-block event-name-container">
+                <a class="event-name text-truncate" href="{{{url}}}">{{name}}</a>
+                <div class="muted text-truncate">
+                    <small>{{#userdate}} {{timesort}}, {{#str}} strftimerecent {{/str}} {{/userdate}}</small>
                 </div>
             </div>
-            <div class="text-xs-right text-right hidden-desktop">{{enddate}}</div>
+        </div>
+        <div class="span5 text-truncate">
+            {{#action.actionable}}
+                <a href="{{{action.url}}}">{{action.name}}</a>
+                {{#action.itemcount}}
+                    <span class="badge">{{.}}</span>
+                {{/action.itemcount}}
+            {{/action.actionable}}
+            {{^action.actionable}}
+                <div class="text-muted">{{action.name}}</div>
+            {{/action.actionable}}
+        </div>
+    </div>
+    <div class="row-fluid visible-tablet">
+        <div class="span12">
+            <div class="d-inline-block event-icon">
+                {{#icon}}{{#pix}} {{key}}, {{component}}, {{alttext}} {{/pix}}{{/icon}}
+            </div>
+            <div class="d-inline-block event-name-container">
+                <a class="event-name text-truncate" href="{{{url}}}">{{name}}</a>
+                <div class="muted text-truncate">
+                    <small>{{#userdate}} {{timesort}}, {{#str}} strftimerecent {{/str}} {{/userdate}}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid visible-phone">
+        <div class="span12">
+            <div class="d-inline-block event-icon">
+                {{#icon}}{{#pix}} {{key}}, {{component}}, {{alttext}} {{/pix}}{{/icon}}
+            </div>
+            <div class="d-inline-block event-name-container">
+                <a class="event-name text-truncate" href="{{{url}}}">{{name}}</a>
+                <div class="muted text-truncate">
+                    <small>{{#userdate}} {{timesort}}, {{#str}} strftimerecent {{/str}} {{/userdate}}</small>
+                </div>
+            </div>
         </div>
     </div>
 </li>

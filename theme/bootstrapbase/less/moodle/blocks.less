@@ -241,7 +241,7 @@
     }
 }
 
-@chart-size: 80px;
+@chart-size: 70px;
 @doughnut-border-size: 15px;
 @doughnut-dasharray: 204;
 @doughnut-empty-colour: @grayLighter;
@@ -327,5 +327,45 @@
             height: (@chart-size / 2);
             width: (@chart-size / 2);
         }
+    }
+}
+
+.block_myoverview {
+    background-color: transparent;
+    .event-list-item {
+        border-bottom: 1px solid @tableBorder;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        &:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .event-icon {
+            vertical-align: middle;
+
+            &::before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+            }
+        }
+
+        .event-name-container {
+            vertical-align: middle;
+            max-width: ~"calc(100% - 50px)";
+
+            .event-name {
+                display: block;
+            }
+        }
+    }
+    h4 {
+        font-weight: normal;
+    }
+    .well {
+        background-color: @white;
+        box-shadow: none;
     }
 }
