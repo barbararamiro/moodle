@@ -332,7 +332,19 @@
 }
 
 .block_myoverview {
+    background-color: transparent;
+
     .event-list-item {
+        border-bottom: 1px solid @tableBorder;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+
+        &:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
         .event-icon {
             vertical-align: middle;
 
@@ -362,5 +374,14 @@
     .empty-placeholder-image-lg {
         height: 125px;
         width: 145px;
+    }
+
+    h4 {
+        font-weight: normal;
+    }
+
+    .well {
+        background-color: @white;
+        box-shadow: none;
     }
 }
