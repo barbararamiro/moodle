@@ -16365,6 +16365,9 @@ body {
   background-color: #fff;
   box-shadow: none;
 }
+.block_myoverview .course-info-container .media .pull-left {
+  float: left;
+}
 /**
  * Moodle forms HTML isn't changeable via renderers (yet?) so this
  * .less file imports styles from the bootstrap @variables file and
